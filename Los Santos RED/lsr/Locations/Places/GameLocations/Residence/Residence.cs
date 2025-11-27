@@ -961,6 +961,11 @@ public class Residence : GameLocation, ILocationSetupable, IRestableLocation, II
             Game.DisplayNotification($"ERROR PAYING OUT RENT {ex.Message}");
         }
     }
+    public override void HandleRaid()
+    {
+        CashStorage.StoredCash = 0;
+        SimpleInventory.RemoveAllItems();
+    }
 
     public void OnPlayerLoadedSave()
     {

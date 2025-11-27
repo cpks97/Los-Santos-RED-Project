@@ -680,4 +680,9 @@ public class Business : GameLocation, ILocationSetupable, IRestableLocation, IIn
         }, "FastForwardWatcher");
         //EntryPoint.WriteToConsole($"PLAYER EVENT: START REST ACTIVITY AT BUSINESS");
     }
+    public override void HandleRaid()
+    {
+        SimpleInventory?.RemoveAllItems();
+        CashStorage.StoredCash = 0;
+    }
 }

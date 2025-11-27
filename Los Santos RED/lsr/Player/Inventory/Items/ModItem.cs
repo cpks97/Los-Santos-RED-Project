@@ -44,6 +44,7 @@ using Microsoft.VisualBasic;
 [XmlInclude(typeof(EquipmentItem))]
 [XmlInclude(typeof(BodyArmorItem))]
 [XmlInclude(typeof(TrophyItem))]
+[XmlInclude(typeof(DocumentItem))]
 public class ModItem
 {
     private UIMenuNumericScrollerItem<int> sellScroller;
