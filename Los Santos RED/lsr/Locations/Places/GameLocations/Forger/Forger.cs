@@ -41,8 +41,6 @@ public class Forger : GameLocation
     public int CustomPlateCost { get; set; } = 500;
     public int WantedPlateSalesPrice { get; set; } = 50;
     public int CleanPlateSalesPrice { get; set; } = 200;
-    public int DocumentForgeryCost { get; set; } = 5000;
-
     public int PoliceIdentificationSalesPrice { get; set; } = 550;
     public int IdentificationSalesPrice { get; set; } = 45;
 
@@ -327,17 +325,18 @@ public class Forger : GameLocation
                 continue;
             }
             string CarName = veh.GetCarName();
+            int cost = (int)(Settings.SettingsManager.VehicleTheftSettings.BaseCost * veh.GetDocumentForgeryMultiplier());
             UIMenuItem menuItem = new UIMenuItem(CarName, $"Forge documents for the car.");
-            menuItem.RightLabel = DocumentForgeryCost.ToString("C0");
+            menuItem.RightLabel = cost.ToString("C0");
             menuItem.Activated += (sender, args) =>
             {
-                if (Player.BankAccounts.GetMoney(false) <= DocumentForgeryCost)
+                if (Player.BankAccounts.GetMoney(false) <= cost)
                 {
                     PlayErrorSound();
                     DisplayMessage("~r~Cash Only", "You do not have enough cash on hand.");
                     return;
                 }
-                Player.BankAccounts.GiveMoney(-1 * DocumentForgeryCost, false);
+                Player.BankAccounts.GiveMoney(-1 * cost, false);
                 DocumentItem document = new DocumentItem();
                 document.Name = $"{veh.ModelName()}-{veh.CarPlate.PlateNumber}";
                 document.ItemType = ItemType.Valuables;

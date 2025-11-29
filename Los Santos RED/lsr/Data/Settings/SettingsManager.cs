@@ -238,6 +238,9 @@ public class SettingsManager
     [Category("Other")]
     [Description("Debug Settings")]
     public DebugSettings DebugSettings { get; set; } = new DebugSettings();
+    [Category("Player")]
+    [Description("Vehicle Theft Settings")]
+    public VehicleTheftSettings VehicleTheftSettings { get; set; } = new VehicleTheftSettings();
 
     public void Setup()
     {
@@ -246,7 +249,7 @@ public class SettingsManager
             RespawnSettings, VehicleSettings, PedSwapSettings, ActivitySettings, SprintSettings, ViolationSettings, RecoilSettings, SwaySettings, SelectorSettings, InvestigationSettings, CriminalHistorySettings, ScannerSettings, KeySettings, PlayerOtherSettings, CellphoneSettings,
             PoliceSettings,GangSettings,CivilianSettings, EMSSettings,FireSettings, DamageSettings, WorldSettings, TaskSettings, TimeSettings, WeatherSettings, VanillaSettings,DebugSettings,PerformanceSettings,TaxiSettings,
             UIGeneralSettings,LSRHUDSettings,BarDisplaySettings,ActionWheelSettings, NeedsSettings, RoadblockSettings, PoliceSpawnSettings,PoliceTaskSettings,PoliceSpeechSettings,PlayerSpeechSettings,FlashlightSettings, SecuritySettings,DragSettings,BinocularSettings
-            ,DoorToggleSettings,ShovelSettings,PedLoadingSettings,RadarDetectorSettings, GroupSettings
+            ,DoorToggleSettings,ShovelSettings,PedLoadingSettings,RadarDetectorSettings, GroupSettings, VehicleTheftSettings
         };
     }
     public void SetDefault()

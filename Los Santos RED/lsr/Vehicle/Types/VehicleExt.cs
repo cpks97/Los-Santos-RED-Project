@@ -1851,5 +1851,33 @@ namespace LSR.Vehicles
             }
             return false;
         }
+        public float GetDocumentForgeryMultiplier()
+        {
+            switch (VehicleClass)
+            {
+                case VehicleClass.Compact: return Settings.SettingsManager.VehicleTheftSettings.CompactsMultiplier;
+                case VehicleClass.Sedan: return Settings.SettingsManager.VehicleTheftSettings.SedansMultiplier;
+                case VehicleClass.SUV: return Settings.SettingsManager.VehicleTheftSettings.SUVsMultiplier;
+                case VehicleClass.Coupe: return Settings.SettingsManager.VehicleTheftSettings.CoupesMultiplier;
+                case VehicleClass.Muscle: return Settings.SettingsManager.VehicleTheftSettings.MuscleMultiplier;
+                case VehicleClass.SportClassic: return Settings.SettingsManager.VehicleTheftSettings.SportsClassicsMultiplier;
+                case VehicleClass.Sport: return Settings.SettingsManager.VehicleTheftSettings.SportsMultiplier;
+                case VehicleClass.Super: return Settings.SettingsManager.VehicleTheftSettings.SuperMultiplier;
+                case VehicleClass.Motorcycle: return Settings.SettingsManager.VehicleTheftSettings.MotorcyclesMultiplier;
+                case VehicleClass.OffRoad: return Settings.SettingsManager.VehicleTheftSettings.OffRoadMultiplier;
+                case VehicleClass.Industrial: return Settings.SettingsManager.VehicleTheftSettings.IndustrialMultiplier;
+                case VehicleClass.Utility: return Settings.SettingsManager.VehicleTheftSettings.UtilityMultiplier;
+                case VehicleClass.Van: return Settings.SettingsManager.VehicleTheftSettings.VansMultiplier;
+                case VehicleClass.Cycle: return Settings.SettingsManager.VehicleTheftSettings.CyclesMultiplier;
+                case VehicleClass.Boat: return Settings.SettingsManager.VehicleTheftSettings.BoatsMultiplier;
+                case VehicleClass.Helicopter: return Settings.SettingsManager.VehicleTheftSettings.HelicoptersMultiplier;
+                case VehicleClass.Plane: return Settings.SettingsManager.VehicleTheftSettings.PlanesMultiplier;
+                case VehicleClass.Service: return Settings.SettingsManager.VehicleTheftSettings.ServiceMultiplier;
+                case VehicleClass.Emergency: return Settings.SettingsManager.VehicleTheftSettings.EmergencyMultiplier;
+                case VehicleClass.Military: return Settings.SettingsManager.VehicleTheftSettings.MilitaryMultiplier;
+                case VehicleClass.Commercial: return Settings.SettingsManager.VehicleTheftSettings.CommercialMultiplier;
+                default: return 1f;
+            }
+        }
     }
 }
