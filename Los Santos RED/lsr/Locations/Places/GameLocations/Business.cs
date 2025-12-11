@@ -345,20 +345,18 @@ public class Business : GameLocation, ILocationSetupable, IRestableLocation, IIn
         ButtonPromptText = GetButtonPromptText();
         if (Blip.Exists())
         {
-            Blip.Sprite = IsOwned ? BlipSprite.Business : BlipSprite.BusinessForSale;
+            Blip.Name = IsOwned ? "Business" : "Business For Sale";
+            MapIconColorString = (IsOwned ? "Green" : "White");
+            Blip.Color = Color.FromName(IsOwned ? "Green" : "White");
         }
     }
     public override void UpdateBlip(ITimeReportable time)
     {
         if (Blip.Exists())
         {
+            Blip.Name = IsOwned ? "Business" : "Business For Sale";
             MapIconColorString = (IsOwned ? "Green" : "White");
-            Blip.Sprite = IsOwned ? BlipSprite.Business : BlipSprite.BusinessForSale;
             Blip.Color = Color.FromName(IsOwned ? "Green" : "White");
-        }
-        if (IsOwned)
-        {
-            return;
         }
         base.UpdateBlip(time);
     }
