@@ -81,7 +81,7 @@ public class VehicleInteractionMenu
         VehicleExt.SimpleInventory.CreateInteractionMenu(player, MenuPool, InventoryWeaponHeaderMenu, !player.IsInVehicle, null, null, false, null, null);
         VehicleExt.WeaponStorage.CreateInteractionMenu(player, MenuPool, InventoryWeaponHeaderMenu, weapons, modItems, !player.IsInVehicle, false);
         VehicleExt.CashStorage.CreateInteractionMenu(player, MenuPool, InventoryWeaponHeaderMenu, null, !player.IsInVehicle, false);
-        if(VehicleExt.IsOwnedByPlayer)
+        if(!(VehicleExt.IsMotorcycle || VehicleExt.IsBicycle))
         {
             UIMenuItem outfitMenuItem = new UIMenuItem("Manage Outfit");
             outfitMenuItem.Activated += (sender, args) =>
