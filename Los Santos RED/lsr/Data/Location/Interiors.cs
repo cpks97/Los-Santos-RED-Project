@@ -72,7 +72,7 @@ public class Interiors : IInteriors
         Banks();
         BarberShops();
         ClothingShops();
-        Businesses();
+        //Businesses();
         Serialization.SerializeParam(PossibleInteriors, ConfigFileName);
     }
     public List<Interior> GetAllPlaces()

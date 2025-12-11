@@ -415,7 +415,7 @@ public class PlacesOfInterest : IPlacesOfInterest
     private void DefaultConfig_Businesses()
     {
         Businesses = new List<Business>();
-
+        return;
         Businesses = new List<Business>()
         {
             new Business(new Vector3(1437.496f,-1491.862f,63.62201f),163.8885f,"Trap House", "Selling misery since the 80's")
