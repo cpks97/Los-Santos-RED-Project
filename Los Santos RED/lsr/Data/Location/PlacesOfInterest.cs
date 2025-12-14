@@ -4,6 +4,7 @@ using LosSantosRED.lsr;
 using LosSantosRED.lsr.Helper;
 using LosSantosRED.lsr.Interface;
 using LosSantosRED.lsr.Locations;
+using LosSantosRED.lsr.Player.ActiveTasks;
 using Rage;
 using Rage.Native;
 using System;
@@ -414,8 +415,6 @@ public class PlacesOfInterest : IPlacesOfInterest
     }
     private void DefaultConfig_Businesses()
     {
-        Businesses = new List<Business>();
-        return;
         Businesses = new List<Business>()
         {
             new Business(new Vector3(1437.496f,-1491.862f,63.62201f),163.8885f,"Trap House", "Selling misery since the 80's")
@@ -3094,7 +3093,7 @@ public class PlacesOfInterest : IPlacesOfInterest
         Restaurants = new List<Restaurant>()
         {
             //Generic and Sit Down
-            new Restaurant(new Vector3(-2188.348f,-408.6776f, 13.17961f), 226.5375f, "Pipeline Inn", "Take a look, just take a look...","FancyFishMenu", FoodType.Seafood) { CloseTime = 24,OpenTime = 0 },
+            new Restaurant(new Vector3(-2188.348f,-408.6776f, 13.17961f), 226.5375f, "Pipeline Inn", "Take a look, just take a look...","FancyFishMenu", FoodType.Seafood) { CloseTime = 24,OpenTime = 0, PlayerTasks = new List<MissionTask>{ new DeliveryTask() { ItemToDeliver="Stuff?", Payout = 20f, Description = "Deliver some stuff?", DeliverTo = new Vector3(114.2954f, -4.942202f, 67.82149f) } } },
             new Restaurant(new Vector3(980.0559f, -1396.695f, 31.68536f), 219.9515f, "La Taqueria", "Autentica Comida Mexicana","MexicanMenu", FoodType.Mexican),
             new Restaurant(new Vector3(-1487.163f, -308.0127f, 47.02639f), 231.5184f, "Las Cuadras Restaurant", "No horsing around!","FancyDeliMenu", FoodType.Mexican),
             new Restaurant(new Vector3(-1473.121f, -329.6028f, 44.81668f), 319.3725f, "Las Cuadras Deli", "No horsing around!","FancyDeliMenu", FoodType.Mexican | FoodType.Sandwiches),

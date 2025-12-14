@@ -2,6 +2,7 @@
 using LosSantosRED.lsr.Helper;
 using LosSantosRED.lsr.Interface;
 using LosSantosRED.lsr.Locations;
+using LosSantosRED.lsr.Player.ActiveTasks;
 using LSR.Vehicles;
 using Microsoft.VisualBasic;
 using Mod;
@@ -343,6 +344,9 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
     public virtual bool ShowInteractPrompt => !IgnoreEntranceInteract && CanInteract;
     public string MapTeleportString => IsOnSPMap && !IsOnMPMap ? "(SP)" : IsOnMPMap && !IsOnSPMap ? "(MP)" : "";
 
+    public List<MissionTask> PlayerTasks { get; set; } = new List<MissionTask>();
+
+
     #region Business Ownership
     public virtual int PurchasePrice { get; set; }
     public virtual int PayoutFrequency { get; set; } = 7;
@@ -520,7 +524,6 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         Time = time;
         ModDataFileManager = modDataFileManager;
 
-
         VendorMeleeWeapons = issuableWeapons.GetWeaponData(VendorMeleeWeaponsID);
         VendorLongGuns = issuableWeapons.GetWeaponData(VendorLongGunWeaponsID);
         VendorSideArms = issuableWeapons.GetWeaponData(VendorSidearmWeaponsID);
@@ -585,6 +588,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
                 Transaction.VehiclePreviewPosition = VehiclePreviewLocation;
                 Transaction.CreateTransactionMenu(Player, ModItems, World, Settings, Weapons, Time);
                 AddPropertyManagement();
+                AddLocationTasks();
                 InteractionMenu.Visible = true;
                 Transaction.ProcessTransactionMenu();
                 Transaction.DisposeTransactionMenu();
@@ -1474,6 +1478,29 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
                 OnSold();
             };
             subMenu.AddItem(businessManagementButton);
+        }
+    }
+    public virtual void AddLocationTasks()
+    {
+        if(PlayerTasks?.Count > 0)
+        {
+            UIMenu subMenu = MenuPool.AddSubMenu(InteractionMenu, $"Inquire about available jobs.");
+            foreach (MissionTask task in PlayerTasks)
+            {
+                UIMenuItem jobs = new UIMenuItem(task.Description);
+                jobs.Activated += (s, i) =>
+                {
+                    Game.Console.Print($"CanStartMission {Player.PlayerTasks.CanStartMission()}");
+                    if (Player.PlayerTasks.CanStartMission())
+                    {
+                        Interior?.ForceExitPlayer(Player, this);
+                        InteractionMenu.Clear();
+
+                        task.Setup();
+                    }
+                };
+                subMenu.AddItem(jobs);
+            }
         }
     }
     public virtual int CalculatePayoutAmount(int numberOfPaymentsToProcess)

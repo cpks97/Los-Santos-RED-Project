@@ -1,6 +1,7 @@
 ﻿using ExtensionsMethods;
 using LosSantosRED.lsr.Helper;
 using LosSantosRED.lsr.Interface;
+using LosSantosRED.lsr.Player.ActiveTasks;
 using Rage;
 using RAGENativeUI;
 using System;
@@ -32,6 +33,7 @@ public class PlayerTasks
     public UndergroundGunsTasks UndergroundGunsTasks { get; private set; }
     public VehicleExporterTasks VehicleExporterTasks { get; private set; }
     public List<PlayerTask> PlayerTaskList { get; set; } = new List<PlayerTask>();
+    public MissionTask MissionTask { get; set; }
     public PlayerTasks(ITaskAssignable player, ITimeControllable time, IGangs gangs, IPlacesOfInterest placesOfInterest, ISettingsProvideable settings, IEntityProvideable world, 
         ICrimes crimes, INameProvideable names, IWeapons weapons, IShopMenus shopMenus, IModItems modItems, IPedGroups pedGroups, IAgencies agencies, IGangTerritories gangTerritories, IZones zones)
     {
@@ -353,5 +355,17 @@ public class PlayerTasks
     public void OnInteractionMenuCreated(GameLocation gameLocation, MenuPool menuPool, UIMenu interactionMenu)
     {
         PlayerTaskGroups.ForEach(x => x.OnInteractionMenuCreated(gameLocation, menuPool, interactionMenu));
+    }
+    public bool CanStartMission()
+    {
+        if(MissionTask == null)
+        {
+            return true;
+        }
+        if(MissionTask.IsActive)
+        {
+            return false;
+        }
+        return true;
     }
 }
