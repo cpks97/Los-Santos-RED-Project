@@ -579,6 +579,56 @@ public class ShopMenus : IShopMenus
         EntryPoint.WriteToConsole($"GetAverageStreetSalesPrice {modItem.Name} averagePrice:{averagePrice}");
         return (int)Math.Round(averagePrice);
     }
+    public int GetAverageArmsSalesPrice(ModItem modItem)
+    {
+        if (modItem == null)
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsSalesPrice NO MOD ITEM");
+            return 0;
+        }
+        List<MenuItem> MatchingMenuItems = new List<MenuItem>();
+        List<ShopMenuGroup> armsCustomerMenus = PossibleShopMenus.ShopMenuGroupList.Where(x => x.CategoryID == StaticStrings.ArmsCustomerMenuID).ToList();
+        foreach (ShopMenuGroup group in armsCustomerMenus)
+        {
+            foreach (PercentageSelectShopMenu pssm in group.PossibleShopMenus)
+            {
+                MatchingMenuItems.AddRange(pssm.ShopMenu.Items.Where(x => x.ModItemName == modItem.Name));
+            }
+        }
+        if (!MatchingMenuItems.Any())
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsSalesPrice {modItem.Name} NO MATCHING MENUS");
+            return 0;
+        }
+        double averagePrice = MatchingMenuItems.Average(x => x.SalesPrice);
+        EntryPoint.WriteToConsole($"GetAverageArmsSalesPrice {modItem.Name} averagePrice:{averagePrice}");
+        return (int)Math.Round(averagePrice);
+    }
+    public int GetAverageArmsPurchasePrice(ModItem modItem)
+    {
+        if (modItem == null)
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsPurchasePrice NO MOD ITEM");
+            return 0;
+        }
+        List<MenuItem> MatchingMenuItems = new List<MenuItem>();
+        List<ShopMenuGroup> armsDealersMenu = PossibleShopMenus.ShopMenuGroupList.Where(x => x.CategoryID == StaticStrings.ArmsDealerMenuID).ToList();
+        foreach (ShopMenuGroup group in armsDealersMenu)
+        {
+            foreach (PercentageSelectShopMenu pssm in group.PossibleShopMenus)
+            {
+                MatchingMenuItems.AddRange(pssm.ShopMenu.Items.Where(x => x.ModItemName == modItem.Name));
+            }
+        }
+        if (!MatchingMenuItems.Any())
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsPurchasePrice {modItem.Name} NO MATCHING MENUS");
+            return 0;
+        }
+        double averagePrice = MatchingMenuItems.Average(x => x.PurchasePrice);
+        EntryPoint.WriteToConsole($"GetAverageArmsPurchasePrice {modItem.Name} averagePrice:{averagePrice}");
+        return (int)Math.Round(averagePrice);
+    }
     public int GetAverageStreetPurchasePrice(ModItem modItem)
     {
         if (modItem == null)
@@ -618,6 +668,7 @@ public class ShopMenus : IShopMenus
         SpecificVehicleExporters();
         SpecificWeaponsShops();
         DrugDealerMenus();
+        ArmsDealerMenus();
         DenList();
         GunShopList();
         MenuGroupList();
@@ -2744,6 +2795,45 @@ public class ShopMenus : IShopMenus
         });
     }
 
+    private void ArmsDealerMenus()
+    {
+
+
+        ShopMenuGroup ArmsDealerMenuGroup = new ShopMenuGroup(StaticStrings.ArmsDealerMenuGroupID, "Arms Dealer Menus", StaticStrings.ArmsDealerMenuID, new List<PercentageSelectShopMenu>()
+        {
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 1",  new List<MenuItem>() {
+                    new MenuItem("Crate of AKs",5500, 5000) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 18, NumberOfItemsToSellToPlayer = 0  }}),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 2", new List<MenuItem>() {
+                    new MenuItem("Crate of Rifles", 7000, 6700) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 13, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 3", new List<MenuItem>() {
+                    new MenuItem("9mm Ammo", 30, 28) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 16, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 4", new List<MenuItem>() {
+                    new MenuItem("7.62mm Ammo", 30, 28) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 13, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 5", new List<MenuItem>() {
+                    new MenuItem("12 Gauge Ammo", 30, 28) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 10, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 6", new List<MenuItem>() {
+                    new MenuItem("Crate of ammunition",700, 650) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 7, NumberOfItemsToSellToPlayer = 0 } }),0),
+         });
+        PossibleShopMenus.ShopMenuGroupList.Add(ArmsDealerMenuGroup);
+
+
+        ShopMenuGroup ArmsCustomerMenuGroup = new ShopMenuGroup(StaticStrings.ArmsCustomerMenuGroupID, "Arms Customer Menus", StaticStrings.ArmsCustomerMenuID, new List<PercentageSelectShopMenu>()
+        {
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 1", new List<MenuItem>() {
+                    new MenuItem("Crate of AKs",0, 7000) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 2", new List<MenuItem>() {
+                    new MenuItem("Crate of Rifles",0, 10000) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 3", new List<MenuItem>() {
+                    new MenuItem("9mm Ammo",0, 200) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 4", new List<MenuItem>() {
+                    new MenuItem("7.62mm Ammo",0, 200) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 5", new List<MenuItem>() {
+                    new MenuItem("12 Gauge Ammo",0, 200) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 },}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 6", new List<MenuItem>() {
+                    new MenuItem("Crate of ammunition",0, 2300) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 },}),400),
+        });
+        PossibleShopMenus.ShopMenuGroupList.Add(ArmsCustomerMenuGroup);
+    }
     private void DrugDealerMenus()
     {
 

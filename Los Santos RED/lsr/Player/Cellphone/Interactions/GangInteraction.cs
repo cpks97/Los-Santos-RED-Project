@@ -55,6 +55,7 @@ public class GangInteraction : IContactMenuInteraction
     private UIMenuItem RequestBackupMenu;
     private UIMenu BackupSubMenu;
     private UIMenu DrugMeetSubMenu;
+    private UIMenu WeaponMeetSubMenu;
     private UIMenu ReferencesSubMenu;
     private IShopMenus ShopMenus;
 
@@ -295,6 +296,7 @@ public class GangInteraction : IContactMenuInteraction
 
         AddDrugMeetSubMenu();
         AddDrugBuySubMenu();
+        AddWeaponMeetSubMenu();
 
 
     }
@@ -330,6 +332,38 @@ public class GangInteraction : IContactMenuInteraction
         DrugMeetSubMenu.AddItem(DrugMeetupStart);
     }
 
+    private void AddWeaponMeetSubMenu()
+    {
+        WeaponMeetSubMenu = MenuPool.AddSubMenu(ReferencesSubMenu, "Arms Trafficking");
+        ReferencesSubMenu.MenuItems[ReferencesSubMenu.MenuItems.Count() - 1].Description = $"Sell a large quantity of weapons to a gang. Make sure you have the merchandise.";
+        WeaponMeetSubMenu.RemoveBanner();
+        UIMenuListScrollerItem<GameLocation> LocationMenu = new UIMenuListScrollerItem<GameLocation>("Location", "Select the location for the meet", PlacesOfInterest.PossibleLocations.WeaponMeetLocations().Where(x => x.IsCorrectMap(World.IsMPMapLoaded) && x.IsSameState(Player.CurrentLocation?.CurrentZone?.GameState)));
+        UIMenuNumericScrollerItem<int> quantityScroller = new UIMenuNumericScrollerItem<int>("Quantity", $"Select the total amount to deal", Settings.SettingsManager.TaskSettings.WeaponMeetMin, Settings.SettingsManager.TaskSettings.WeaponMeetMax, 5) { Value = Settings.SettingsManager.TaskSettings.WeaponMeetMin };
+        UIMenuListScrollerItem<ModItem> PossibleItemsMenu = new UIMenuListScrollerItem<ModItem>("Item", "", ModItems.AllItems().Where(predicate: x => x.ItemType == ItemType.Smuggling && x.ItemSubType == ItemSubType.Arms));
+        UIMenuListScrollerItem<GangDisplay> DealingGangMenu = new UIMenuListScrollerItem<GangDisplay>("Dealing Gang", GangDescription, GetNonHostilGangDisplay());
+        UIMenuItem WeaponMeetupStart = new UIMenuItem("Start", $"Start the task.") { RightLabel = $"~HUD_COLOUR_GREENDARK~?-?~s~" };
+        UpdatedWeaponMeetSaleRightLabel(WeaponMeetupStart, PossibleItemsMenu.SelectedItem, quantityScroller.Value);
+        WeaponMeetupStart.Activated += (sender, selectedItem) =>
+        {
+            Player.PlayerTasks.GangTasks.StartWeaponMeetTask(ActiveGang, GangContact, PossibleItemsMenu.SelectedItem, quantityScroller.Value, DealingGangMenu.SelectedItem?.Gang, true, LocationMenu.SelectedItem);//, WheelManAccomplices.Value, LocationType.SelectedItem, requireAllMembers.Checked);
+            sender.Visible = false;
+        };
+        PossibleItemsMenu.IndexChanged += (sender, oldIndex, newIndex) =>
+        {
+            UpdatedWeaponMeetSaleRightLabel(WeaponMeetupStart, PossibleItemsMenu.SelectedItem, quantityScroller.Value);
+        };
+        quantityScroller.IndexChanged += (sender, oldIndex, newIndex) =>
+        {
+            UpdatedWeaponMeetSaleRightLabel(WeaponMeetupStart, PossibleItemsMenu.SelectedItem, quantityScroller.Value);
+        };
+
+        WeaponMeetSubMenu.AddItem(LocationMenu);
+        WeaponMeetSubMenu.AddItem(PossibleItemsMenu);
+        WeaponMeetSubMenu.AddItem(DealingGangMenu);
+        WeaponMeetSubMenu.AddItem(quantityScroller);
+        WeaponMeetSubMenu.AddItem(WeaponMeetupStart);
+    }
+
 
 
     private void UpdatedDrugMeetSaleRightLabel(UIMenuItem uiMenuItem, ModItem selectedItem, int quantity)
@@ -342,7 +376,11 @@ public class GangInteraction : IContactMenuInteraction
         int AveragePrice = (int)Math.Round(ShopMenus.GetAverageStreetPurchasePrice(selectedItem) * RandomItems.GetRandomNumber(Settings.SettingsManager.TaskSettings.DrugMeetPriceScalarMin, Settings.SettingsManager.TaskSettings.DrugMeetPriceScalarMax));
         uiMenuItem.RightLabel = $"Purchase Price: ~r~${AveragePrice * quantity}~s~";
     }
-
+    private void UpdatedWeaponMeetSaleRightLabel(UIMenuItem uiMenuItem, ModItem selectedItem, int quantity)
+    {
+        int AveragePrice = (int)Math.Round(ShopMenus.GetAverageArmsSalesPrice(selectedItem) * RandomItems.GetRandomNumber(Settings.SettingsManager.TaskSettings.WeaponMeetPriceScalarMin, Settings.SettingsManager.TaskSettings.WeaponMeetPriceScalarMax));
+        uiMenuItem.RightLabel = $"Sales Price: ~g~${AveragePrice * quantity}~s~";
+    }
 
     private void AddDrugBuySubMenu()
     {

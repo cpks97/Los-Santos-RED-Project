@@ -23,5 +23,7 @@ namespace LosSantosRED.lsr.Interface
         VehicleVariationShopMenu GetVehicleVariationMenu(string vehicleVariationShopMenuID);
         int GetAverageStreetSalesPrice(ModItem modItem);
         int GetAverageStreetPurchasePrice(ModItem modItem);
+        int GetAverageArmsSalesPrice(ModItem modItem);
+        int GetAverageArmsPurchasePrice(ModItem modItem);
     }
 }

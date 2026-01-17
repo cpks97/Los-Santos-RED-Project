@@ -357,6 +357,7 @@ public class ModItems : IModItems
         AllItems.AddRange(PossibleItems.PipeSmokeItems);
         AllItems.AddRange(PossibleItems.IngestItems);
         AllItems.AddRange(PossibleItems.InhaleItems);
+        AllItems.AddRange(PossibleItems.SmugglingItems);
         AllItems.AddRange(PossibleItems.InjectItems);
         AllItems.AddRange(PossibleItems.VehicleItems);
         AllItems.AddRange(PossibleItems.WeaponItems);
@@ -393,6 +394,7 @@ public class ModItems : IModItems
         AllItems.AddRange(PossibleItems.PipeSmokeItems);
         AllItems.AddRange(PossibleItems.IngestItems);
         AllItems.AddRange(PossibleItems.InhaleItems);
+        AllItems.AddRange(PossibleItems.SmugglingItems);
         AllItems.AddRange(PossibleItems.InjectItems);
        // AllItems.AddRange(PossibleItems.HotelStayItems);
         AllItems.AddRange(PossibleItems.DrillItems);
@@ -456,6 +458,7 @@ public class ModItems : IModItems
         AllItems.AddRange(PossibleItems.PipeSmokeItems);
         AllItems.AddRange(PossibleItems.IngestItems);
         AllItems.AddRange(PossibleItems.InhaleItems);
+        AllItems.AddRange(PossibleItems.SmugglingItems);
         AllItems.AddRange(PossibleItems.InjectItems);
         AllItems.AddRange(PossibleItems.DrillItems);
         AllItems.AddRange(PossibleItems.TapeItems);
@@ -552,6 +555,7 @@ public class ModItems : IModItems
         DefaultConfig_Valuables();
         DefaultConfig_FEE();
         DefaultConfig_HardwareItems();
+        DefaultConfig_SmugglingItems();
         Serialization.SerializeParam(PossibleItems, ConfigFileName);
     }
     private void DefaultConfig_FEE()
@@ -582,6 +586,40 @@ public class ModItems : IModItems
              new HardwareItem("Chemicals", "For Science! Mix responsibly... or don't.", ItemType.Equipment){
                 ModelItemID = "ng_proc_paintcan02a",
                 ItemSubType = ItemSubType.Misc},
+        });
+    }
+    private void DefaultConfig_SmugglingItems()
+    {
+        PossibleItems.SmugglingItems.AddRange(new List<SmugglingItem>
+        {
+            new SmugglingItem("Crate of AKs", "A crate of 7 AK's, mags included", ItemType.Smuggling)
+            {
+                ItemSubType = ItemSubType.Arms,
+                ModelItemID = "ch_prop_ch_crate_full_01a",
+            },
+            new SmugglingItem("Crate of Rifles", "Crates filled with automatic rifles", ItemType.Smuggling)
+            {
+                ItemSubType = ItemSubType.Arms,
+                ModelItemID = "sm_prop_smug_crate_s_bones",
+            },
+            new SmugglingItem("9mm Ammo", "x50 9mm Cartridges", ItemType.Smuggling)
+            {
+                ItemSubType = ItemSubType.Arms,
+                ModelItemID = "prop_ld_ammo_pack_01",
+            },
+            new SmugglingItem("7.62mm Ammo", "x50 7.62mm Cartridges", ItemType.Smuggling)
+            {
+                ItemSubType = ItemSubType.Arms,
+                ModelItemID = "prop_ld_ammo_pack_03",
+            },
+            new SmugglingItem("Crate of ammunition", "A crate full of various ammunition", ItemType.Smuggling)
+            {
+                ItemSubType = ItemSubType.Arms,
+                ModelItemID = "h4_prop_h4_box_ammo03a",
+            },
+             new SmugglingItem("12 Gauge Ammo", "x50 12 Gauge Cartridges", ItemType.Smuggling){
+                ModelItemID = "prop_ld_ammo_pack_02",
+                ItemSubType = ItemSubType.Arms},
         });
     }
     private void DefaultConfig_Armor()

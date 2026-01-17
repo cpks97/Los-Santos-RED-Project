@@ -243,5 +243,14 @@ public class PossibleLocations
         AllLocations.AddRange(CarCrushers);
         return AllLocations;
     }
+    public List<GameLocation> WeaponMeetLocations()
+    {
+        List<GameLocation> AllLocations = new List<GameLocation>();
+        //AllLocations.AddRange(DeadDrops);
+        AllLocations.AddRange(IllicitMarketplaces);
+        AllLocations.AddRange(ScrapYards);
+        AllLocations.AddRange(CarCrushers);
+        return AllLocations;
+    }
 }
 

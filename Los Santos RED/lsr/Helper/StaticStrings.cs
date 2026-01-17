@@ -136,6 +136,9 @@ public static class StaticStrings
     public static readonly string DrugDealerMenuID = "DrugDealerMenu";
     public static readonly string DrugCustomerMenuID = "DrugCustomerMenu";
 
+    public static readonly string ArmsDealerMenuID = "ArmsDealerMenu";
+    public static readonly string ArmsCustomerMenuID = "ArmsCustomerMenu";
+
     public static readonly string MarijuanaDealerMenuGroupID = "MarijuanaDealerMenu";
     public static readonly string ToiletCleanerDealerMenuGroupID = "ToiletCleanerDealerMenu";
     public static readonly string SPANKDealerMenuGroupID = "SPANKDealerMenu";
@@ -145,6 +148,8 @@ public static class StaticStrings
     public static readonly string CokeDealerMenuGroupID = "CokeDealerMenu";
     public static readonly string CorruptDealerMenuGroupID = "CorruptDealerMenu";
 
+    public static readonly string ArmsCustomerMenuGroupID = "ArmsCustomerMenu";
+    public static readonly string ArmsDealerMenuGroupID = "ArmsCustomerMenu";
     public static readonly string MarijuanaCustomerMenuGroupID = "MarijuanaCustomerMenu";
     public static readonly string ToiletCleanerCustomerMenuGroupID = "ToiletCleanerCustomerMenu";
     public static readonly string SPANKCustomerMenuGroupID = "SPANKCustomerMenu";
