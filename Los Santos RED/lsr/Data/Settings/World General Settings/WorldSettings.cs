@@ -97,6 +97,8 @@ public class WorldSettings : ISettingsDefaultable
     public bool DefaultToMPMap { get; set; }
     //public int MaxPedsBeforeDispatchPause { get; set; }
     //public int MaxVehiclesBeforeDispatchPause { get; set; }
+    [Description("Select this option if you'd like to reveal the entire map on startup by default")]
+    public bool LoadRevealMap { get; set; }
 
     [OnDeserialized()]
     private void SetValuesOnDeserialized(StreamingContext context)
@@ -118,6 +120,7 @@ public class WorldSettings : ISettingsDefaultable
         RandomVehicleVanityPlatesPercent = 3f;// 5f;
         ShowAllLocationsOnDirectory = false;
         DefaultToMPMap = false;
+        LoadRevealMap = false;
         LowerPedSpawnsAtHigherWantedLevels = true;
 
         DefaultSpawnMultiplier = 1.0f;

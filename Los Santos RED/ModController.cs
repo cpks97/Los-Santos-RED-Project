@@ -1,5 +1,6 @@
 ﻿using LosSantosRED.lsr.Helper;
 using Rage;
+using Rage.Native;
 using RAGENativeUI;
 using RAGENativeUI.Elements;
 using System;
@@ -437,6 +438,13 @@ namespace LosSantosRED.lsr
             {
                 World.LoadMPMap();
             }
+        }
+        private void LoadRevealMap()
+        {
+            if (ModDataFileManager.Settings.SettingsManager.WorldSettings.LoadRevealMap)
+            {
+                NativeFunction.Natives.SET_MINIMAP_HIDE_FOW(true);
+            };
         }
         private void DisplayCrashMessage()
         {
