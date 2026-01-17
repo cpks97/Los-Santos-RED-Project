@@ -773,6 +773,56 @@ public class ShopMenus : IShopMenus
         EntryPoint.WriteToConsole($"GetAverageStreetSalesPrice {modItem.Name} averagePrice:{averagePrice}");
         return (int)Math.Round(averagePrice);
     }
+    public int GetAverageArmsSalesPrice(ModItem modItem)
+    {
+        if (modItem == null)
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsSalesPrice NO MOD ITEM");
+            return 0;
+        }
+        List<MenuItem> MatchingMenuItems = new List<MenuItem>();
+        List<ShopMenuGroup> armsCustomerMenus = PossibleShopMenus.ShopMenuGroupList.Where(x => x.CategoryID == StaticStrings.ArmsCustomerMenuID).ToList();
+        foreach (ShopMenuGroup group in armsCustomerMenus)
+        {
+            foreach (PercentageSelectShopMenu pssm in group.PossibleShopMenus)
+            {
+                MatchingMenuItems.AddRange(pssm.ShopMenu.Items.Where(x => x.ModItemName == modItem.Name));
+            }
+        }
+        if (!MatchingMenuItems.Any())
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsSalesPrice {modItem.Name} NO MATCHING MENUS");
+            return 0;
+        }
+        double averagePrice = MatchingMenuItems.Average(x => x.SalesPrice);
+        EntryPoint.WriteToConsole($"GetAverageArmsSalesPrice {modItem.Name} averagePrice:{averagePrice}");
+        return (int)Math.Round(averagePrice);
+    }
+    public int GetAverageArmsPurchasePrice(ModItem modItem)
+    {
+        if (modItem == null)
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsPurchasePrice NO MOD ITEM");
+            return 0;
+        }
+        List<MenuItem> MatchingMenuItems = new List<MenuItem>();
+        List<ShopMenuGroup> armsDealersMenu = PossibleShopMenus.ShopMenuGroupList.Where(x => x.CategoryID == StaticStrings.ArmsDealerMenuID).ToList();
+        foreach (ShopMenuGroup group in armsDealersMenu)
+        {
+            foreach (PercentageSelectShopMenu pssm in group.PossibleShopMenus)
+            {
+                MatchingMenuItems.AddRange(pssm.ShopMenu.Items.Where(x => x.ModItemName == modItem.Name));
+            }
+        }
+        if (!MatchingMenuItems.Any())
+        {
+            EntryPoint.WriteToConsole($"GetAverageArmsPurchasePrice {modItem.Name} NO MATCHING MENUS");
+            return 0;
+        }
+        double averagePrice = MatchingMenuItems.Average(x => x.PurchasePrice);
+        EntryPoint.WriteToConsole($"GetAverageArmsPurchasePrice {modItem.Name} averagePrice:{averagePrice}");
+        return (int)Math.Round(averagePrice);
+    }
     public int GetAverageStreetPurchasePrice(ModItem modItem)
     {
         if (modItem == null)
@@ -812,6 +862,7 @@ public class ShopMenus : IShopMenus
         SpecificVehicleExporters();
         SpecificWeaponsShops();
         DrugDealerMenus();
+        ArmsDealerMenus();
         DenList();
         GunShopList();
         MenuGroupList();

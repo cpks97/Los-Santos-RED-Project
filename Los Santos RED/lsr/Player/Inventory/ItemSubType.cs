@@ -17,6 +17,7 @@ public enum ItemSubType
     Narcotic,
     Meal,
     Misc,
+    Arms,
 
 
     Cigarette,

@@ -26,5 +26,7 @@ namespace LosSantosRED.lsr.Interface
         int GetAverageStreetSalesPrice(ModItem modItem);
         int GetAverageStreetPurchasePrice(ModItem modItem);
         PedClothingShopMenu GetPedClothingShopMenu(string pedClothingShopMenuID);
+        int GetAverageArmsSalesPrice(ModItem modItem);
+        int GetAverageArmsPurchasePrice(ModItem modItem);
     }
 }

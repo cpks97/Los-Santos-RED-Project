@@ -22,4 +22,5 @@ public enum ItemType
     Jewelry,
     Cellphone,
     Paraphernalia,
+    Smuggling,
 }

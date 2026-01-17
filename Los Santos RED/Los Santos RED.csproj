@@ -288,6 +288,7 @@
     <Compile Include="lsr\Locations\Places\Interface\IPayoutDisbursable.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangArsonTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangRacketeeringTask.cs" />
+    <Compile Include="lsr\Player\ActiveTasks\Gang\Generic\WeaponMeetTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\RivalGangAmbushTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangBriberyTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\Generic\DrugMeetTask.cs" />
@@ -610,6 +611,7 @@
     <Compile Include="lsr\Player\Inventory\Items\RollingPapersItem.cs" />
     <Compile Include="lsr\Player\Inventory\Items\TrophyItem.cs" />
     <Compile Include="lsr\Player\Inventory\Items\DocumentItem.cs" />
+    <Compile Include="lsr\Player\Inventory\Items\SmugglingItem.cs" />
     <Compile Include="lsr\Player\Inventory\Items\ValuableItem.cs" />
     <Compile Include="lsr\Player\Inventory\Items\VariablePriceMenuItem.cs" />
     <Compile Include="lsr\Player\Managers\CuffManager.cs" />

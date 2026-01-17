@@ -231,6 +231,16 @@ public class GangTasks : IPlayerTaskGroup
         dugMeetTask.Start();
     }
 
+    public void StartWeaponMeetTask(Gang gang, GangContact gangContact, ModItem modItem, int quantity, Gang meetingGang, bool IsPlayerSellingWeapons, GameLocation dealingLocation)
+    {
+        GangWeaponMeetTask weaponMeetTask = new GangWeaponMeetTask(Player, Time, Gangs, PlacesOfInterest, Settings, World, Crimes, Weapons, Names, PedGroups, ShopMenus, ModItems, PlayerTasks, this,
+            gangContact, gang, modItem, quantity, meetingGang, dealingLocation);
+        weaponMeetTask.IsPlayerSellingWeapons = IsPlayerSellingWeapons;
+        AllGenericGangTasks.Add(weaponMeetTask);
+        weaponMeetTask.Setup();
+        weaponMeetTask.Start();
+    }
+
 
 
     public string GetGeneircTaskAbortMessage()
