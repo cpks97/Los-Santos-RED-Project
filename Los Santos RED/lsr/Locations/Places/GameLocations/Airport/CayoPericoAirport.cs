@@ -151,7 +151,7 @@ public class CayoPericoAirport : Airport
         ///
         Player.CurrentLocation.SetFakeZone("IsHeist");
 
-        base.OnArrive(Player,setPos);
+        base.OnArrive(Player, setPos);
     }
 
     private void DisableCayo()
@@ -173,6 +173,14 @@ public class CayoPericoAirport : Airport
     }
     private void EnableCayo()
     {
+        // Safety: Liberty City (LCPP/WorldTravel) occupies the Cayo region for some installs.
+        // If Liberty City is currently loaded, do NOT load Cayo IPLs or switch island map states.
+        if (Mod.SeamlessCayoPericoController.IsLibertyCityLoaded())
+        {
+            Game.DisplayNotification("~r~Cayo Perico is disabled while Liberty City is loaded.");
+            return;
+        }
+
         foreach (string requestIPL in cayoIPLs)
         {
             NativeFunction.Natives.REQUEST_IPL(requestIPL);

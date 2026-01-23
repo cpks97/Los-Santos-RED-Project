@@ -90,15 +90,86 @@ public class WorldSettings : ISettingsDefaultable
     public bool CheckAreaBeforeVehicleSpawn { get; set; }
 
     [Description("More aggressively remove abandoned or empty vehicle from the game world.")]
-    public bool ExtendedVehicleCleanup { get;  set; }
+    public bool ExtendedVehicleCleanup { get; set; }
     public bool SuppressFEJVehiclesFromGenerators { get; set; }
     public bool SetMissionFlagOn { get; set; }
     [Description("Set if you would want MP map to load in by default")]
     public bool DefaultToMPMap { get; set; }
+
+    [Description("If enabled, World.LoadMPMap will also request the GTAO Cayo Perico IPL set. Leave disabled if you use Seamless Cayo streaming or Liberty City can overlap the island.")]
+    public bool LoadCayoIplsWithMPMap { get; set; }
     //public int MaxPedsBeforeDispatchPause { get; set; }
     //public int MaxVehiclesBeforeDispatchPause { get; set; }
     [Description("Select this option if you'd like to reveal the entire map on startup by default")]
     public bool LoadRevealMap { get; set; }
+
+
+    [Description("Enable seamless (no cutscene) streaming of Cayo Perico while staying on the SP map. Loads Cayo IPLs gradually and enables island features only when near the island. Auto-disables when Liberty City is loaded (manhat06_slod).")]
+    public bool EnableSeamlessCayoPerico { get; set; }
+    [Description("Distance (meters) from the Cayo center at which island features turn ON (hysteresis enter).")]
+    public float SeamlessCayoEnterDistance { get; set; }
+    [Description("Distance (meters) from the Cayo center at which island features turn OFF (hysteresis exit). Should be greater than EnterDistance.")]
+    public float SeamlessCayoExitDistance { get; set; }
+    [Description("If enabled, applies the minimap/pause-map fix while near the island (radar interior trick using h4_fake_islandx).")]
+    public bool SeamlessCayoEnableMapFix { get; set; }
+    [Description("If enabled, unloads any Cayo IPLs that were loaded by LSR seamless streaming whenever Liberty City is detected as loaded (manhat06_slod). Recommended if Liberty City occupies the Cayo region.")]
+    public bool SeamlessCayoUnloadIplsWhenLibertyCityLoaded { get; set; }
+    [Description("If enabled, unloads any Cayo IPLs that were loaded by LSR seamless streaming when the feature is disabled. Keeps memory usage low.")]
+    public bool SeamlessCayoUnloadIplsWhenDisabled { get; set; }
+
+    [Description("Distance (meters) at which LSR begins requesting Cayo IPLs for seamless travel. Higher values preload earlier; lower values keep LS lighter. Default: 5000.")]
+    public float SeamlessCayoIplLoadDistance { get; set; }
+    [Description("Distance (meters) at which LSR unloads any Cayo IPLs it loaded for seamless travel. Must be greater than IplLoadDistance. Default: 6000.")]
+    public float SeamlessCayoIplUnloadDistance { get; set; }
+
+
+
+
+    [Description("Minimum distance gap (meters) enforced between IplLoadDistance and IplUnloadDistance when your XML is misconfigured (unload <= load). Default: 500.")]
+    public float SeamlessCayoIplUnloadMinGapDistance { get; set; }
+
+    [Description("Distance (meters) at which detail Cayo IPLs begin streaming (interleaved with base). This should be <= IplLoadDistance. Default: 5000.")]
+    public float SeamlessCayoIplDetailStartDistance { get; set; }
+
+    [Description("Distance (meters) at which the loader switches to the near batch size and prefers detail IPLs (higher fidelity while close). Default: 3500.")]
+    public float SeamlessCayoIplNearDistance { get; set; }
+
+    [Description("Number of IPLs to request per loader tick while in the mid/detail start band (distance <= DetailStartDistance but > NearDistance). Default: 4.")]
+    public int SeamlessCayoIplBatchSizeMid { get; set; }
+
+    [Description("Distance (meters) at which the Cayo minimap/pause-map fix becomes active during approach. This can start before EnterDistance so the island map appears while flying in. Default: 3500.")]
+    public float SeamlessCayoMapFixStartDistance { get; set; }
+    [Description("Distance (meters) at which the minimap fix will STOP after it has started. Used as hysteresis to prevent toggling near the boundary. Default: MapFixStartDistance + 750.")]
+    public float SeamlessCayoMapFixStopDistance { get; set; }
+    [Description("Distance (meters) at which SET_USE_ISLAND_MAP(true) is allowed (pause-map). Keep this smaller than MapFixStartDistance so Los Santos pause map returns quickly when leaving. Default: 3500.")]
+    public float SeamlessCayoPauseMapDistance { get; set; }
+
+    [Description("If enabled, toggles SET_USE_ISLAND_MAP(true) while within MapFixStartDistance to improve pause-map behavior. Set false if it conflicts with other world/map mods.")]
+    public bool SeamlessCayoUseIslandMap { get; set; }
+    [Description("If enabled, disables the PrLog zone while seamless Cayo is enabled (matches some FiveM loaders). Leave disabled if you use Liberty City/LCPP overlays to avoid zone-name conflicts.")]
+    public bool SeamlessCayoDisablePrLogZone { get; set; }
+
+    [Description("How long (ms) the player must remain within IplLoadDistance before streaming begins. Helps stabilize the first approach and prevents accidental preloads. Default: 1000.")]
+    public uint SeamlessCayoIplLoadHoldMs { get; set; }
+    [Description("Number of IPLs to request per loader tick while in the far/base phase (distance > IplNearDistance). Default: 4.")]
+    public int SeamlessCayoIplBatchSizeFar { get; set; }
+    [Description("Number of IPLs to request per loader tick while in the near/detail phase (distance <= IplNearDistance). Default: 8.")]
+    public int SeamlessCayoIplBatchSizeNear { get; set; }
+    [Description("Sleep (ms) between IPL request batches while loading. Lower loads faster but may pop/stutter; higher loads smoother but later. Default: 200.")]
+    public int SeamlessCayoIplBatchDelayMs { get; set; }
+
+    [Description("If enabled, and h4_islandx is detected active while you are far from the island, the controller will attempt to unload the island even if it was loaded by another system. Use with caution if other mods intentionally keep Cayo loaded. Default: false.")]
+    public bool SeamlessCayoForceUnloadIfIslandActiveWhileFar { get; set; }
+
+    [Description("If enabled, unloading can remove the FULL Cayo IPL list (more aggressive). Leave disabled for maximum stability; only IPLs requested by the seamless controller will be removed unless Liberty City is loaded.")]
+    public bool SeamlessCayoAggressiveUnloadAllIpls { get; set; }
+    [Description("Delay (ms) that player must remain beyond the IPL unload distance before unloading begins. Helps avoid flicker/unload-load thrash when flying fast. Default: 5000.")]
+    public uint SeamlessCayoUnloadDelayMs { get; set; }
+    [Description("Number of IPLs to remove per unload batch (when unloading is enabled). Lower is safer, higher unloads faster. Default: 10.")]
+    public int SeamlessCayoUnloadBatchSize { get; set; }
+    [Description("Sleep (ms) between unload batches. Default: 200.")]
+    public int SeamlessCayoUnloadBatchDelayMs { get; set; }
+
 
     [OnDeserialized()]
     private void SetValuesOnDeserialized(StreamingContext context)
@@ -120,7 +191,37 @@ public class WorldSettings : ISettingsDefaultable
         RandomVehicleVanityPlatesPercent = 3f;// 5f;
         ShowAllLocationsOnDirectory = false;
         DefaultToMPMap = false;
+        LoadCayoIplsWithMPMap = false;
         LoadRevealMap = false;
+
+        EnableSeamlessCayoPerico = false;
+        SeamlessCayoEnterDistance = 2000f;
+        SeamlessCayoExitDistance = 3000f;
+        SeamlessCayoEnableMapFix = true;
+        SeamlessCayoUnloadIplsWhenLibertyCityLoaded = true;
+        SeamlessCayoUnloadIplsWhenDisabled = true;
+        SeamlessCayoIplLoadDistance = 6000f;
+        SeamlessCayoIplUnloadDistance = 7000f;
+
+        SeamlessCayoIplUnloadMinGapDistance = 500f;
+        SeamlessCayoIplDetailStartDistance = 5000f;
+        SeamlessCayoMapFixStopDistance = 5750f;
+        SeamlessCayoPauseMapDistance = 3500f;
+        SeamlessCayoIplBatchSizeMid = 4;
+
+        SeamlessCayoMapFixStartDistance = 5000f;
+        SeamlessCayoUseIslandMap = true;
+        SeamlessCayoDisablePrLogZone = false;
+        SeamlessCayoIplNearDistance = 3500f;
+        SeamlessCayoIplLoadHoldMs = 1000;
+        SeamlessCayoIplBatchSizeFar = 2;
+        SeamlessCayoIplBatchSizeNear = 6;
+        SeamlessCayoIplBatchDelayMs = 200;
+        SeamlessCayoForceUnloadIfIslandActiveWhileFar = false;
+        SeamlessCayoAggressiveUnloadAllIpls = false;
+        SeamlessCayoUnloadDelayMs = 5000;
+        SeamlessCayoUnloadBatchSize = 10;
+        SeamlessCayoUnloadBatchDelayMs = 200;
         LowerPedSpawnsAtHigherWantedLevels = true;
 
         DefaultSpawnMultiplier = 1.0f;

@@ -35,13 +35,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>E:\GTA5\Plugins\</OutputPath>
+    <OutputPath>..\..\..\..\Downloads\mod\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>E:\GTA5\Plugins\</OutputPath>
@@ -97,14 +98,14 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAudio">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\NAudio.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\Grand Theft Auto V\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RAGENativeUI">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\RAGENativeUI.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\Grand Theft Auto V\RAGENativeUI.dll</HintPath>
     </Reference>
     <Reference Include="RagePluginHookSDK">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\SDK\RagePluginHookSDK.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\Grand Theft Auto V\SDK\RagePluginHookSDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
