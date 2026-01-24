@@ -875,11 +875,17 @@ namespace Mod
             try { return NativeFunction.Natives.IS_IPL_ACTIVE<bool>("h4_islandx"); } catch { return false; }
         }
 
+
+
+        private static bool IsH4IslandAirstripSlodActive()
+        {
+            try { return NativeFunction.Natives.IS_IPL_ACTIVE<bool>("h4_islandairstrip_slod"); } catch { return false; }
+        }
         private bool IsCayoVisuallyLoaded()
         {
             // IMPORTANT: do NOT treat h4_mph4_island as "Cayo loaded".
             // In LSRP MP-map mode, h4_mph4_island can be active even when the island is not streamed.
-            return IsH4IslandxActive();
+            return IsH4IslandxActive() || IsH4IslandAirstripSlodActive();
         }
 
         private void LogStatusThrottled(bool enabled, bool isMPMapLoaded, float distance, float iplLoadDist, float iplUnloadDist, float detailStartDist, float nearDist, float mapFixStartDist, float mapFixStopDist, float pauseMapDist)
@@ -1555,7 +1561,16 @@ namespace Mod
                 bool pauseMenu = false;
                 try { pauseMenu = NativeFunction.Natives.IS_PAUSE_MENU_ACTIVE<bool>(); } catch { }
 
-                bool wantPauseMap = worldSettings.SeamlessCayoUseIslandMap && !pauseMenu && distance <= pauseMapDist && !IsLibertyCityLoaded();
+                // Pause-map: do NOT use the tighter pause-map distance as the truth. It can flip while still in Cayo context.
+                // Tie SET_USE_ISLAND_MAP to region detection (LC sentinel first, then Cayo sentinel/proximity).
+                bool wantPauseMap = false;
+                if (worldSettings.SeamlessCayoUseIslandMap && pauseMenu && !IsLibertyCityLoaded())
+                {
+                    bool cayoBySentinel = IsCayoVisuallyLoaded() && distance <= iplUnloadDist; // avoid getting stuck if another system keeps islandx active while far
+                    bool cayoByProximity = distance <= pauseMapDist || NearIsland;
+                    wantPauseMap = cayoBySentinel || cayoByProximity;
+                }
+
                 if (wantPauseMap)
                 {
                     SetUseIslandMap(true);

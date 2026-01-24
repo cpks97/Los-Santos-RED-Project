@@ -1375,13 +1375,16 @@ public class LEDispatcher
         {
             allowAny = true;
         }
-
         if (CallSpawnTask(allowAny, true, false, false, TaskRequirements.None, false, IsOffDutySpawn, false))
         {
             //EntryPoint.WriteToConsoleTestLong($"AMBIENT COP SPAWN TASK RAN");
             OnDispatchSuccess();
             ShouldRunAmbientDispatch = false;
             //GameTimeAttemptedDispatch = Game.GameTime;
+        }
+        else
+        {
+            OnDispatchFailure("spawnTask");
         }
 
     }
@@ -1502,6 +1505,18 @@ public class LEDispatcher
             {
                 SpawnLocation.GetClosestStreet(Player.IsWanted);
                 SpawnLocation.GetClosestSidewalk();
+
+                // Liberty City maps can lack usable vehicle nodes; salvage spawns using the initial pad position.
+                bool libertyCityLoaded = false;
+                try { libertyCityLoaded = NativeFunction.Natives.IS_IPL_ACTIVE<bool>("manhat06_slod"); } catch { }
+                bool cayoLoaded = false;
+                try { cayoLoaded = NativeFunction.Natives.IS_IPL_ACTIVE<bool>("h4_islandx") || NativeFunction.Natives.IS_IPL_ACTIVE<bool>("h4_islandairstrip_slod"); } catch { }
+                if ((libertyCityLoaded || cayoLoaded) && !SpawnLocation.IsWater && SpawnLocation.InitialPosition != Vector3.Zero && SpawnLocation.StreetPosition == Vector3.Zero)
+                {
+                    SpawnLocation.StreetPosition = SpawnLocation.InitialPosition;
+                    SpawnLocation.SidewalkPosition = SpawnLocation.InitialPosition;
+                }
+
                 GameFiber.Yield();
                 isValidSpawn = AreSpawnsValidSpawn(SpawnLocation);
             }

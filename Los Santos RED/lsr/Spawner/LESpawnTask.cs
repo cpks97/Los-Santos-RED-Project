@@ -32,6 +32,91 @@ public class LESpawnTask : SpawnTask
     public bool IsOffDutySpawn { get; set; } = false;
     public bool CheckPosition { get; set; } = true;
 
+    private uint GameTimeLastSpawnFailureLog;
+
+    private void LogFailureThrottled(string message)
+    {
+        try
+        {
+            if (GameTimeLastSpawnFailureLog != 0 && Game.GameTime - GameTimeLastSpawnFailureLog < 2000)
+            {
+                return;
+            }
+            GameTimeLastSpawnFailureLog = Game.GameTime;
+            EntryPoint.WriteToConsole(message, 0);
+        }
+        catch { }
+    }
+
+    private bool IsPositionBlocked(Vector3 pos)
+    {
+        try
+        {
+            if (Settings?.SettingsManager?.WorldSettings != null && Settings.SettingsManager.WorldSettings.CheckAreaBeforeVehicleSpawn)
+            {
+                // Mission entity check (existing behavior)
+                if (NativeFunction.Natives.IS_POINT_OBSCURED_BY_A_MISSION_ENTITY<bool>(pos.X, pos.Y, pos.Z, 0.1f, 0.5f, 1f, 0))
+                {
+                    return true;
+                }
+                // Broader occupancy check (vehicles/peds/objects). Radius kept small to reduce false positives.
+                if (NativeFunction.Natives.IS_POSITION_OCCUPIED<bool>(pos.X, pos.Y, pos.Z, 2.5f, false, true, true, false, false, false, false))
+                {
+                    return true;
+                }
+            }
+        }
+        catch { }
+        return false;
+    }
+
+    private bool TryFindNearbyFreeSpawnPoint(Vector3 origin, out Vector3 found)
+    {
+        found = origin;
+        try
+        {
+            float[] radii = new float[] { 6f, 10f, 15f, 22f, 30f, 35f };
+            Vector3[] dirs = new Vector3[]
+            {
+                new Vector3(1f, 0f, 0f),
+                new Vector3(0.7071f, 0.7071f, 0f),
+                new Vector3(0f, 1f, 0f),
+                new Vector3(-0.7071f, 0.7071f, 0f),
+                new Vector3(-1f, 0f, 0f),
+                new Vector3(-0.7071f, -0.7071f, 0f),
+                new Vector3(0f, -1f, 0f),
+                new Vector3(0.7071f, -0.7071f, 0f),
+            };
+
+            foreach (float r in radii)
+            {
+                foreach (Vector3 d in dirs)
+                {
+                    Vector3 candidate = origin + (d * r);
+                    float groundZ = candidate.Z;
+                    try
+                    {
+                        // Use a higher probe Z to better handle pads/bridges.
+                        if (NativeFunction.Natives.GET_GROUND_Z_FOR_3D_COORD<bool>(candidate.X, candidate.Y, candidate.Z + 50f, out groundZ, false))
+                        {
+                            candidate = new Vector3(candidate.X, candidate.Y, groundZ);
+                        }
+                    }
+                    catch { }
+
+                    if (!IsPositionBlocked(candidate))
+                    {
+                        found = candidate;
+                        return true;
+                    }
+                }
+            }
+        }
+        catch { }
+        return false;
+    }
+
+
 
     private bool EnsureModelLoaded(string modelName, int timeoutMs)
     {
@@ -367,10 +452,22 @@ public class LESpawnTask : SpawnTask
             }
             World.Vehicles.CleanupAmbient();
 
-            if (DoPersistantEntityCheck && Settings.SettingsManager.WorldSettings.CheckAreaBeforeVehicleSpawn && NativeFunction.Natives.IS_POINT_OBSCURED_BY_A_MISSION_ENTITY<bool>(Position.X, Position.Y, Position.Z, 0.1f, 0.5f, 1f, 0))//NativeFunction.Natives.IS_POSITION_OCCUPIED<bool>(Position.X, Position.Y, Position.Z, 0.1f, false, true, false, false, false, false, false))
+            bool isGroundVehicleSpawn = VehicleType != null && !VehicleType.IsBoat && !VehicleType.IsHelicopter && !VehicleType.IsPlane && !SpawnLocation.IsWater;
+            Vector3 spawnPos = Position;
+
+            if (DoPersistantEntityCheck && isGroundVehicleSpawn && IsPositionBlocked(spawnPos))
             {
-                EntryPoint.WriteToConsole("LE SPAWN TASK POSITION OCCUPIED");
-                return null;
+                // Liberty City pads can be occupied; attempt a cheap nearby ring search instead of aborting.
+                if (TryFindNearbyFreeSpawnPoint(spawnPos, out Vector3 alt))
+                {
+                    SpawnLocation.StreetPosition = alt;
+                    spawnPos = alt;
+                }
+                else
+                {
+                    LogFailureThrottled("LE SPAWN TASK POSITION OCCUPIED (no alternate found)");
+                    return null;
+                }
             }
 
             //EntryPoint.WriteToConsole($"LE SPAWN TASK POSITION OF SPAWN {Position} WaterPosition:{SpawnLocation.WaterPosition} InitialPosition:{SpawnLocation.InitialPosition} ISWater:{SpawnLocation.IsWater} DebugWaterHeight{SpawnLocation.DebugWaterHeight}");
