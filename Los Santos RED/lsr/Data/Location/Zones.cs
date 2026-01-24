@@ -52,7 +52,29 @@ public class Zones : IZones
         if (ListResult == null)
         {
             zoneName = GetInternalZoneString(ZonePosition);
-            ListResult = ZoneList.Where(x => x.InternalGameName.ToUpper() == zoneName.ToUpper()).FirstOrDefault();
+            var matches = ZoneList.Where(x => x.InternalGameName.ToUpper() == zoneName.ToUpper()).ToList();
+            if (matches.Count == 1)
+            {
+                ListResult = matches[0];
+            }
+            else if (matches.Count > 1)
+            {
+                // Some configs include shared/internal zone names across multiple states (ex: SANAND used in both San Andreas and Liberty).
+                // When multiple matches exist, pick based on which world is currently active to prevent state bleed (e.g., LC zone names in LS).
+                bool libertyCityLoaded = Rage.Native.NativeFunction.Natives.IS_IPL_ACTIVE<bool>("manhat06_slod");
+                if (libertyCityLoaded)
+                {
+                    ListResult = matches.FirstOrDefault(x => x.StateID == StaticStrings.LibertyStateID || x.StateID == StaticStrings.AlderneyStateID) ?? matches[0];
+                }
+                else
+                {
+                    ListResult = matches.FirstOrDefault(x => x.StateID != StaticStrings.LibertyStateID && x.StateID != StaticStrings.AlderneyStateID) ?? matches[0];
+                }
+            }
+            else
+            {
+                ListResult = null;
+            }
         }
         if (ListResult == null)
         {
@@ -70,13 +92,13 @@ public class Zones : IZones
     public List<Zone> GetZoneByItem(ModItem modItem, IShopMenus shopMenus, bool isPurchase)
     {
         List<Zone> MatchingZones = new List<Zone>();
-        foreach(Zone zone in ZoneList)
+        foreach (Zone zone in ZoneList)
         {
-            if(isPurchase)
+            if (isPurchase)
             {
                 if (zone.DealerMenus != null && zone.DealerMenus.HasItem(modItem, shopMenus))
                 {
-                    MatchingZones.Add(zone);    
+                    MatchingZones.Add(zone);
                 }
             }
             else
@@ -352,7 +374,7 @@ public class Zones : IZones
         Serialization.SerializeParams(LPPZones, $"Plugins\\LosSantosRED\\AlternateConfigs\\{StaticStrings.LPPConfigFolder}\\Zones_{StaticStrings.LPPConfigSuffix}.xml");
     }
 
-   
+
 
     //private bool IsPointInPolygon(Vector2 point, Vector2[] polygon)
     //{
@@ -380,9 +402,9 @@ public class Zones : IZones
 
     public void Setup(ILocationTypes locationTypes)
     {
-        foreach(Zone zone in ZoneList)
+        foreach (Zone zone in ZoneList)
         {
-            if(!string.IsNullOrEmpty(zone.CountyID))
+            if (!string.IsNullOrEmpty(zone.CountyID))
             {
                 zone.GameCounty = locationTypes.GetCounty(zone.CountyID);
             }
@@ -391,6 +413,6 @@ public class Zones : IZones
                 zone.GameState = locationTypes.GetState(zone.StateID);
             }
         }
-        
+
     }
 }

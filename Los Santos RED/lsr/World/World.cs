@@ -793,6 +793,14 @@ namespace Mod
         private int NextBaseIndex = 0;
         private int NextDetailIndex = 0;
 
+        // Adaptive IPL scheduler (token-bucket + ETA-based ramp).
+        // Goal: avoid load spikes that can cause stutter/crashes, while still finishing before the player reaches the island.
+        private double IplTokenBucket = 0.0;
+        private uint GameTimeLastIplTokenUpdate = 0;
+        private float LastAdaptiveDesiredRps = 0f;
+        private float LastAdaptiveClosingSpeed = 0f;
+        private float LastAdaptiveEtaSeconds = 0f;
+
         private bool WarnedMpMap = false;
 
         private enum ControllerState
@@ -904,7 +912,7 @@ namespace Mod
                 int baseCount = PhaseBaseIpls?.Count ?? 0;
                 int detailCount = PhaseDetailIpls?.Count ?? 0;
 
-                Log($"enabled={enabled} mpMap={isMPMapLoaded} lc={manhat06_slod} dist={distance:0} load={iplLoadDist:0} detailStart={detailStartDist:0} nearBatch={nearDist:0} unload={iplUnloadDist:0} mapFixOn={mapFixStartDist:0} mapFixOff={mapFixStopDist:0} pauseMap={pauseMapDist:0} near={NearIsland} startedLoad={HasStartedIplLoading} loaderAlive={loaderAlive} unloaderAlive={unloaderAlive} mapFixAlive={mapFixAlive} p1={NextBaseIndex}/{baseCount} p2={NextDetailIndex}/{detailCount} loadedByThis={IplsLoadedByThis.Count} preexisting={PreexistingActiveIpls.Count} h4_islandx={h4_islandx} h4_mph4_island={h4_mph4_island} h4_islandairstrip_slod={h4_islandairstrip_slod} useIslandMapByThis={UseIslandMapByThis} state={CurrentState} reason={CurrentStateReason}", 0);
+                Log($"enabled={enabled} mpMap={isMPMapLoaded} lc={manhat06_slod} dist={distance:0} load={iplLoadDist:0} detailStart={detailStartDist:0} nearBatch={nearDist:0} unload={iplUnloadDist:0} mapFixOn={mapFixStartDist:0} mapFixOff={mapFixStopDist:0} pauseMap={pauseMapDist:0} near={NearIsland} startedLoad={HasStartedIplLoading} loaderAlive={loaderAlive} unloaderAlive={unloaderAlive} mapFixAlive={mapFixAlive} p1={NextBaseIndex}/{baseCount} p2={NextDetailIndex}/{detailCount} loadedByThis={IplsLoadedByThis.Count} preexisting={PreexistingActiveIpls.Count} h4_islandx={h4_islandx} h4_mph4_island={h4_mph4_island} h4_islandairstrip_slod={h4_islandairstrip_slod} useIslandMapByThis={UseIslandMapByThis} rps={LastAdaptiveDesiredRps:0.0} eta={LastAdaptiveEtaSeconds:0.0} close={LastAdaptiveClosingSpeed:0.0} state={CurrentState} reason={CurrentStateReason}", 0);
             }
             catch { }
         }
@@ -1665,6 +1673,12 @@ namespace Mod
             NextBaseIndex = 0;
             NextDetailIndex = 0;
 
+            IplTokenBucket = 0.0;
+            GameTimeLastIplTokenUpdate = 0;
+            LastAdaptiveDesiredRps = 0f;
+            LastAdaptiveClosingSpeed = 0f;
+            LastAdaptiveEtaSeconds = 0f;
+
             WarnedMpMap = false;
         }
 
@@ -1861,6 +1875,13 @@ namespace Mod
                 {
                     try
                     {
+                        // Reset adaptive scheduler state at the start of a load session.
+                        IplTokenBucket = 0.0;
+                        GameTimeLastIplTokenUpdate = 0;
+                        LastAdaptiveDesiredRps = 0f;
+                        LastAdaptiveClosingSpeed = 0f;
+                        LastAdaptiveEtaSeconds = 0f;
+
                         while (EntryPoint.ModController?.IsRunning == true)
                         {
                             var ws = Settings?.SettingsManager?.WorldSettings;
@@ -1895,10 +1916,21 @@ namespace Mod
                             }
 
                             bool allowDetail = distance <= detailStartDist;
-                            RequestIplsBatched(ws, distance, allowDetail, nearDist, detailStartDist);
 
-                            int delay = ws.SeamlessCayoIplBatchDelayMs <= 0 ? 200 : ws.SeamlessCayoIplBatchDelayMs;
-                            GameFiber.Sleep(delay);
+                            if (ws.SeamlessCayoUseAdaptiveIplScheduler)
+                            {
+                                RequestIplsAdaptive(ws, playerPos, distance, allowDetail, nearDist, detailStartDist);
+                                int tick = ws.SeamlessCayoIplAdaptiveTickMs <= 0 ? 50 : ws.SeamlessCayoIplAdaptiveTickMs;
+                                if (tick < 10) tick = 10;
+                                if (tick > 1000) tick = 1000;
+                                GameFiber.Sleep(tick);
+                            }
+                            else
+                            {
+                                RequestIplsBatched(ws, distance, allowDetail, nearDist, detailStartDist);
+                                int delay = ws.SeamlessCayoIplBatchDelayMs <= 0 ? 200 : ws.SeamlessCayoIplBatchDelayMs;
+                                GameFiber.Sleep(delay);
+                            }
                         }
                     }
                     catch
@@ -1924,6 +1956,203 @@ namespace Mod
             }
             catch { }
             IplLoaderFiber = null;
+        }
+
+        private void RequestIplsAdaptive(WorldSettings ws, Vector3 playerPos, float distance, bool allowDetailPhase, float nearDist, float detailStartDist)
+        {
+            try
+            {
+                EnsurePhaseListsBuilt();
+
+                int baseCount = PhaseBaseIpls.Count;
+                int detailCount = PhaseDetailIpls.Count;
+
+                int baseRemaining = Math.Max(0, baseCount - NextBaseIndex);
+                int detailRemaining = allowDetailPhase ? Math.Max(0, detailCount - NextDetailIndex) : 0;
+                int remaining = baseRemaining + detailRemaining;
+                if (remaining <= 0)
+                {
+                    return;
+                }
+
+                // --- Stage selection (affects min/max request rates) ---
+                bool isNear = distance <= nearDist;
+                bool isMid = !isNear && allowDetailPhase;
+
+                // Max request rates (requests/sec). If unset (<=0), derive from legacy batch settings.
+                int delayMs = ws.SeamlessCayoIplBatchDelayMs <= 0 ? 200 : ws.SeamlessCayoIplBatchDelayMs;
+                if (delayMs < 10) delayMs = 10;
+
+                float derivedFarMax = ((ws.SeamlessCayoIplBatchSizeFar <= 0 ? 2 : ws.SeamlessCayoIplBatchSizeFar) * 1000f) / delayMs;
+                float derivedMidMax = ((ws.SeamlessCayoIplBatchSizeMid <= 0 ? 4 : ws.SeamlessCayoIplBatchSizeMid) * 1000f) / delayMs;
+                float derivedNearMax = ((ws.SeamlessCayoIplBatchSizeNear <= 0 ? 6 : ws.SeamlessCayoIplBatchSizeNear) * 1000f) / delayMs;
+
+                float maxRps;
+                if (isNear)
+                {
+                    maxRps = ws.SeamlessCayoIplMaxRequestsPerSecondNear > 0 ? ws.SeamlessCayoIplMaxRequestsPerSecondNear : derivedNearMax;
+                }
+                else if (isMid)
+                {
+                    maxRps = ws.SeamlessCayoIplMaxRequestsPerSecondMid > 0 ? ws.SeamlessCayoIplMaxRequestsPerSecondMid : derivedMidMax;
+                }
+                else
+                {
+                    maxRps = ws.SeamlessCayoIplMaxRequestsPerSecondFar > 0 ? ws.SeamlessCayoIplMaxRequestsPerSecondFar : derivedFarMax;
+                }
+
+                float minRps;
+                if (isNear)
+                {
+                    minRps = ws.SeamlessCayoIplMinRequestsPerSecondNear > 0 ? ws.SeamlessCayoIplMinRequestsPerSecondNear : 4f;
+                }
+                else if (isMid)
+                {
+                    minRps = ws.SeamlessCayoIplMinRequestsPerSecondMid > 0 ? ws.SeamlessCayoIplMinRequestsPerSecondMid : 2f;
+                }
+                else
+                {
+                    minRps = ws.SeamlessCayoIplMinRequestsPerSecondFar > 0 ? ws.SeamlessCayoIplMinRequestsPerSecondFar : 1f;
+                }
+
+                if (maxRps < minRps) maxRps = minRps;
+
+                // --- ETA-based ramp ---
+                // Compute "closing speed" toward the island so we can estimate time-to-threshold.
+                float closingSpeed = 0f;
+                try
+                {
+                    Vector3 vel = Game.LocalPlayer.Character.Velocity;
+                    Vector3 toIsland = IslandCenter - playerPos;
+                    float d = toIsland.Length();
+                    if (d > 1f)
+                    {
+                        Vector3 dir = toIsland / d;
+                        closingSpeed = (vel.X * dir.X) + (vel.Y * dir.Y) + (vel.Z * dir.Z);
+                    }
+                }
+                catch { }
+
+                if (closingSpeed < 0f) closingSpeed = 0f;
+
+                float targetDist = allowDetailPhase ? nearDist : detailStartDist;
+                float remainingDist = distance - targetDist;
+                if (remainingDist < 0f) remainingDist = 0f;
+
+                float etaSeconds = float.PositiveInfinity;
+                if (closingSpeed > 2f)
+                {
+                    etaSeconds = remainingDist / closingSpeed;
+                }
+
+                float desiredRps = minRps;
+                if (!float.IsInfinity(etaSeconds))
+                {
+                    // If ETA is very large (loitering), stick to minRps.
+                    if (etaSeconds <= 120f)
+                    {
+                        float requiredRps = remaining / Math.Max(etaSeconds, 1f);
+                        desiredRps = Math.Max(minRps, Math.Min(maxRps, requiredRps));
+                    }
+                }
+
+                LastAdaptiveDesiredRps = desiredRps;
+                LastAdaptiveClosingSpeed = closingSpeed;
+                LastAdaptiveEtaSeconds = float.IsInfinity(etaSeconds) ? -1f : etaSeconds;
+
+                // --- Token bucket ---
+                uint now = Game.GameTime;
+                if (GameTimeLastIplTokenUpdate == 0)
+                {
+                    GameTimeLastIplTokenUpdate = now;
+                    return;
+                }
+
+                float dt = (now - GameTimeLastIplTokenUpdate) / 1000f;
+                if (dt < 0f) dt = 0f;
+                GameTimeLastIplTokenUpdate = now;
+
+                IplTokenBucket += desiredRps * dt;
+
+                int maxBurst = ws.SeamlessCayoIplMaxBurstRequests <= 0 ? 12 : ws.SeamlessCayoIplMaxBurstRequests;
+                if (maxBurst < 1) maxBurst = 1;
+                if (maxBurst > 100) maxBurst = 100;
+
+                if (IplTokenBucket > maxBurst)
+                {
+                    IplTokenBucket = maxBurst;
+                }
+
+                int budget = (int)Math.Floor(IplTokenBucket);
+                if (budget <= 0)
+                {
+                    return;
+                }
+
+                int perTick = ws.SeamlessCayoIplMaxRequestsPerTick <= 0 ? 6 : ws.SeamlessCayoIplMaxRequestsPerTick;
+                if (perTick < 1) perTick = 1;
+                if (perTick > 50) perTick = 50;
+
+                int toAttempt = Math.Min(budget, perTick);
+
+                int attempted = 0;
+                int requestedThisTick = 0;
+
+                for (int i = 0; i < toAttempt; i++)
+                {
+                    string ipl = null;
+
+                    bool preferDetail = distance <= nearDist;
+
+                    bool pickDetailNow = allowDetailPhase && NextDetailIndex < detailCount &&
+                                         (NextBaseIndex >= baseCount || (preferDetail ? (i % 2 == 1) : (i % 4 == 3)));
+
+                    if (!pickDetailNow && NextBaseIndex < baseCount)
+                    {
+                        ipl = PhaseBaseIpls[NextBaseIndex];
+                        NextBaseIndex++;
+                    }
+                    else if (allowDetailPhase && NextDetailIndex < detailCount)
+                    {
+                        ipl = PhaseDetailIpls[NextDetailIndex];
+                        NextDetailIndex++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    attempted++;
+
+                    if (string.IsNullOrEmpty(ipl))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        if (!NativeFunction.Natives.IS_IPL_ACTIVE<bool>(ipl))
+                        {
+                            NativeFunction.Natives.REQUEST_IPL(ipl);
+                            IplsLoadedByThis.Add(ipl);
+                            requestedThisTick++;
+                        }
+                    }
+                    catch { }
+                }
+
+                IplTokenBucket -= attempted;
+                if (IplTokenBucket < 0.0) IplTokenBucket = 0.0;
+
+                if (requestedThisTick >= 20)
+                {
+                    Log($"Loader burst: requested={requestedThisTick} (adaptive) remaining={remaining} p1={NextBaseIndex}/{baseCount} p2={NextDetailIndex}/{detailCount}", 0);
+                }
+            }
+            catch
+            {
+                // Best-effort: never crash LSR.
+            }
         }
 
         private void RequestIplsBatched(WorldSettings ws, float distance, bool allowDetailPhase, float nearDist, float detailStartDist)

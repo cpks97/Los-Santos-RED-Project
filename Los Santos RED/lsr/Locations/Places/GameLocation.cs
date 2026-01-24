@@ -383,7 +383,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
             }
             //AttemptVendorSpawn(isOpen, interiors,settings,crimes,weapons,time,world);
         }
-        if(DisableRegularInteract)
+        if (DisableRegularInteract)
         {
             CanInteract = false;
         }
@@ -412,7 +412,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         //EntryPoint.WriteToConsole($"ATTEMPT VENDOR SPAWN AT {Name}");
         int VendorsSpawned = 0;
         List<SpawnPlace> spawns = new List<SpawnPlace>();
-        if(isInterior)
+        if (isInterior)
         {
             if (Interior != null && Interior.VendorLocations != null && Interior.VendorLocations.Any())
             {
@@ -493,7 +493,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         toReturn += "~n~Location: " + "~p~" + ZoneName + "~s~";
         toReturn += "~n~Distance: " + Math.Round(distanceTo * 0.000621371f, 2).ToString() + " Miles away";
 
-        if(taxiFirm== null)
+        if (taxiFirm == null)
         {
             return toReturn;
         }
@@ -503,8 +503,8 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         return toReturn;
     }
     public virtual void StoreData(IShopMenus shopMenus, IAgencies agencies, IGangs gangs, IZones zones, IJurisdictions jurisdictions, IGangTerritories gangTerritories, INameProvideable names, ICrimes crimes, IPedGroups PedGroups,
-        IEntityProvideable world, IStreets streets, ILocationTypes locationTypes, ISettingsProvideable settings, IPlateTypes plateTypes, IOrganizations associations, IContacts contacts, IInteriors interiors, 
-        ILocationInteractable player, IModItems modItems, IWeapons weapons, ITimeControllable time, IPlacesOfInterest placesOfInterest, IIssuableWeapons issuableWeapons, IHeads heads, 
+        IEntityProvideable world, IStreets streets, ILocationTypes locationTypes, ISettingsProvideable settings, IPlateTypes plateTypes, IOrganizations associations, IContacts contacts, IInteriors interiors,
+        ILocationInteractable player, IModItems modItems, IWeapons weapons, ITimeControllable time, IPlacesOfInterest placesOfInterest, IIssuableWeapons issuableWeapons, IHeads heads,
         IDispatchablePeople dispatchablePeople, ModDataFileManager modDataFileManager)
     {
         ShopMenus = shopMenus;
@@ -533,7 +533,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         if (AssignedAssociationID != null)
         {
             AssignedAgency = agencies.GetAgency(AssignedAssociationID);
-            if(AssignedAgency == null)
+            if (AssignedAgency == null)
             {
                 AssignedOrganization = Associations.GetOrganization(AssignedAssociationID);
             }
@@ -546,7 +546,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
             {
                 interior.GameLocation = this;
             }
-        }  
+        }
     }
     public virtual void OnInteract()//ILocationInteractable player, IModItems modItems, IEntityProvideable world, ISettingsProvideable settings, IWeapons weapons, ITimeControllable time, IPlacesOfInterest placesOfInterest)
     {
@@ -692,7 +692,7 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
     }
     public void StandardInteractWithNewCamera(Vector3 desiredPosition, Vector3 desiredDirection, Rotator desiredRotation)
     {
-        if(StoreCamera == null)
+        if (StoreCamera == null)
         {
             StoreCamera = new LocationCamera(this, Player, Settings, NoEntryCam);
         }
@@ -742,13 +742,13 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         //{
         //    return;
         //}
-       // menuItem.NumberOfItemsSoldToPlayer += totalItems;
+        // menuItem.NumberOfItemsSoldToPlayer += totalItems;
         //ItemDesires.OnItemsSoldToPlayer(modItem, totalItems);
     }
     public virtual void AddDistanceOffset(Vector3 offsetToAdd)
     {
         EntrancePosition += offsetToAdd;
-        foreach(SpawnPlace sl in VendorLocations)
+        foreach (SpawnPlace sl in VendorLocations)
         {
             if (sl.Position != Vector3.Zero)
             {
@@ -817,11 +817,11 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
     }
     public bool IsSameState(LocationData locationData)
     {
-        if(locationData == null)
+        if (locationData == null)
         {
             return false;
         }
-        if(locationData.CurrentZone == null)
+        if (locationData.CurrentZone == null)
         {
             return false;
         }
@@ -860,12 +860,12 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         }
         //else
         //{
-            StreetNumber = NativeHelper.CellToStreetNumber(CellX, CellY);
+        StreetNumber = NativeHelper.CellToStreetNumber(CellX, CellY);
         //}
         string LocationName = $"{StreetNumber} {streetName} {betweener} {zoneString}".Trim();
         string ShortLocationName = $"{StreetNumber} {streetName}".Trim();
 
-        if(streetName == "")
+        if (streetName == "")
         {
             LocationName = $"{StreetNumber} {zoneString}".Trim();
             ShortLocationName = $"{StreetNumber}".Trim();
@@ -877,7 +877,17 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         ZoneName = zoneString;
         if (string.IsNullOrEmpty(StateID))
         {
-            StateID = StaticStrings.SanAndreasStateID;
+            // If no explicit StateID was provided in XML, infer from the zone at this location.
+            // This is critical for multi-world setups (San Andreas / Colombia / Liberty / Alderney / etc.)
+            // so locations don't default to San Andreas and show up on the wrong map.
+            if (placeZone != null && !string.IsNullOrEmpty(placeZone.StateID))
+            {
+                StateID = placeZone.StateID;
+            }
+            else
+            {
+                StateID = StaticStrings.SanAndreasStateID;
+            }
         }
         GameState = locationTypes.GetState(StateID);
     }
@@ -887,12 +897,12 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         {
             return false;
         }
-        if(CloseTime == 24 && OpenTime == 0)
+        if (CloseTime == 24 && OpenTime == 0)
         {
             return true;
         }//18 & 4, NEW BAD
         //8 & 20, OLD GOOD
-        if(OpenTime < CloseTime)
+        if (OpenTime < CloseTime)
         {
             return (currentHour >= OpenTime && currentHour <= CloseTime);
         }
@@ -920,16 +930,16 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
                 distanceToPlayer = EntrancePosition.DistanceTo(Game.LocalPlayer.Character);
                 UpdateBlip(time);
                 GameTimeLastCheckedDistance = Game.GameTime;
-                
+
             }
-            if(DistanceToPlayer <= 100f)
+            if (DistanceToPlayer <= 100f)
             {
-               /// UpdatePrompts();
+                /// UpdatePrompts();
                 if (IsActivated && HasInterior)
                 {
                     Interior?.Update(IsOpen(time.CurrentHour));
                 }
-                if(DistanceToPlayer <= CloseRange)
+                if (DistanceToPlayer <= CloseRange)
                 {
                     OnPlayerBecameClose();
                 }
@@ -1179,16 +1189,16 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
         {
             VendorPersonType = VendorPersonnel.PickRandom();
         }
-        if(VendorPersonType == null)
+        if (VendorPersonType == null)
         {
             VendorPersonType = new DispatchablePerson(FallBackVendorModels.PickRandom(), 100, 100);
         }
-        
+
         HandleVariableItems();
-       // EntryPoint.WriteToConsole($"ATTEMPTING VENDOR AT {Name} {VendorPersonType.ModelName}");
+        // EntryPoint.WriteToConsole($"ATTEMPTING VENDOR AT {Name} {VendorPersonType.ModelName}");
         Vendors = new List<Merchant>();
         SpawnLocation sl = new SpawnLocation(spawnPlace.Position) { Heading = spawnPlace.Heading };
-        MerchantSpawnTask merchantSpawnTask = new MerchantSpawnTask(sl, null,VendorPersonType,false,false,true,Settings,Crimes,Weapons,Names,World,ModItems,ShopMenus,this);
+        MerchantSpawnTask merchantSpawnTask = new MerchantSpawnTask(sl, null, VendorPersonType, false, false, true, Settings, Crimes, Weapons, Names, World, ModItems, ShopMenus, this);
 
         merchantSpawnTask.PossibleHeads = VendorPossibleHeads;
         merchantSpawnTask.AllowAnySpawn = true;
@@ -1266,9 +1276,9 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
 
     public virtual void AttemptVendorDespawn()
     {
-        foreach(PedExt pedExt in SpawnedVendors.ToList())
+        foreach (PedExt pedExt in SpawnedVendors.ToList())
         {
-            if(pedExt.Pedestrian.Exists())
+            if (pedExt.Pedestrian.Exists())
             {
                 pedExt.DeleteBlip();
                 pedExt.Pedestrian.IsPersistent = false;
@@ -1364,14 +1374,14 @@ public class GameLocation : ILocationDispatchable, IPayoutDisbursable
     }
     public virtual void OnVendorInjuredByPlayer(Merchant merchant, IViolateable player, IZones zones, IGangTerritories gangTerritories)
     {
- 
+
     }
 
     public virtual void AddLocation(PossibleLocations possibleLocations)
     {
 
     }
-    
+
     public virtual string GetInquireDescription()
     {
         return $"Earn between {PayoutMin:C0} and {PayoutMax:C0} every {PayoutFrequency} day(s)";

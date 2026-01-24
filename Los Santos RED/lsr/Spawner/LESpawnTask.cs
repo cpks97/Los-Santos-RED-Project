@@ -32,6 +32,34 @@ public class LESpawnTask : SpawnTask
     public bool IsOffDutySpawn { get; set; } = false;
     public bool CheckPosition { get; set; } = true;
 
+
+    private bool EnsureModelLoaded(string modelName, int timeoutMs)
+    {
+        if (string.IsNullOrWhiteSpace(modelName))
+        {
+            return false;
+        }
+        uint hash = Game.GetHashKey(modelName);
+        if (NativeFunction.Natives.HAS_MODEL_LOADED<bool>(hash))
+        {
+            return true;
+        }
+        NativeFunction.Natives.REQUEST_MODEL(hash);
+        uint start = Game.GameTime;
+        while (!NativeFunction.Natives.HAS_MODEL_LOADED<bool>(hash) && Game.GameTime - start <= timeoutMs)
+        {
+            GameFiber.Yield();
+        }
+        bool loaded = NativeFunction.Natives.HAS_MODEL_LOADED<bool>(hash);
+        if (!loaded)
+        {
+            EntryPoint.WriteToConsole($"Spawn: MODEL LOAD TIMEOUT name={modelName} hash={hash} pos={Position}", 0);
+            EntryPoint.ModController?.AddSpawnError(new SpawnError(hash, Position, Game.GameTime));
+        }
+        return loaded;
+    }
+
+
     public override void AttemptSpawn()
     {
         try
@@ -65,7 +93,7 @@ public class LESpawnTask : SpawnTask
     }
     public override void SpawnAsPassenger(VehicleExt vehicleExt, int seatIndex)
     {
-        if(vehicleExt == null || !vehicleExt.Vehicle.Exists())
+        if (vehicleExt == null || !vehicleExt.Vehicle.Exists())
         {
             return;
         }
@@ -83,7 +111,7 @@ public class LESpawnTask : SpawnTask
             return;
         }
         //EntryPoint.WriteToConsole($"SPAWN TASK: Add Canine Passengers {VehicleType.ModelName} START UnitCode {UnitCode}");
-        foreach(int seatIndex in VehicleType.CaninePossibleSeats)
+        foreach (int seatIndex in VehicleType.CaninePossibleSeats)
         {
             //EntryPoint.WriteToConsole($"LE SPAWN TASK CANINE SEAT {seatIndex}");
             if (!LastCreatedVehicleExists || !LastCreatedVehicle.Vehicle.IsSeatFree(seatIndex))
@@ -92,7 +120,7 @@ public class LESpawnTask : SpawnTask
                 continue;
             }
             PersonType = Agency.GetRandomPed(World.TotalWantedLevel, VehicleType.RequiredPedGroup, true);
-            if(PersonType == null || !PersonType.IsAnimal)
+            if (PersonType == null || !PersonType.IsAnimal)
             {
                 //EntryPoint.WriteToConsole("LE SPAWN TASK ATTEMPT VEHICLE SPAWN CANINE6");
                 continue;
@@ -110,7 +138,7 @@ public class LESpawnTask : SpawnTask
                 Cleanup(false);
             }
 
-            if(created && !RandomItems.RandomPercent(Settings.SettingsManager.PoliceSpawnSettings.AddAdditionalK9PassengerPercentage))
+            if (created && !RandomItems.RandomPercent(Settings.SettingsManager.PoliceSpawnSettings.AddAdditionalK9PassengerPercentage))
             {
                 GameFiber.Yield();
                 break;
@@ -147,7 +175,7 @@ public class LESpawnTask : SpawnTask
                 }
                 else
                 {
-                   // EntryPoint.WriteToConsole("LE SPAWN TASK ATTEMPT VEHICLE SPAWN DRIVER2" );
+                    // EntryPoint.WriteToConsole("LE SPAWN TASK ATTEMPT VEHICLE SPAWN DRIVER2" );
                     if (LastCreatedVehicleExists)
                     {
                         if (WillAddPassengers)
@@ -171,14 +199,14 @@ public class LESpawnTask : SpawnTask
     protected override void AddPassengers()
     {
         int AlreadyRanItem = -99;
-        if(VehicleType != null && VehicleType.FirstPassengerIndex > 0)
+        if (VehicleType != null && VehicleType.FirstPassengerIndex > 0)
         {
             AlreadyRanItem = VehicleType.FirstPassengerIndex;
             PassengerCreate(VehicleType.FirstPassengerIndex);
         }
         for (int OccupantIndex = 1; OccupantIndex <= OccupantsToAdd; OccupantIndex++)
         {
-            if(OccupantIndex - 1 == AlreadyRanItem)
+            if (OccupantIndex - 1 == AlreadyRanItem)
             {
                 continue;
             }
@@ -217,7 +245,7 @@ public class LESpawnTask : SpawnTask
                 return null;
             }
             Vector3 CreatePos = Position;
-            if(!PlacePedOnGround || VehicleType != null)
+            if (!PlacePedOnGround || VehicleType != null)
             {
                 CreatePos.Z += 1.0f;//1.0f;
                 //CreatePos = CreatePos.Around2D(10f);
@@ -227,20 +255,20 @@ public class LESpawnTask : SpawnTask
             Ped createdPed = null;
             if (VehicleType != null && SpawnedVehicle.Exists())
             {
-                uint GameTimeStarted = Game.GameTime;
-                uint hashKey = Game.GetHashKey(PersonType.ModelName);
-                if (!NativeFunction.Natives.HAS_MODEL_LOADED<bool>(hashKey))
+
+                if (!EnsureModelLoaded(PersonType.ModelName, 1500))
                 {
-                    NativeFunction.Natives.REQUEST_MODEL(hashKey);
-                    while (!NativeFunction.Natives.HAS_MODEL_LOADED<bool>(hashKey) && Game.GameTime - GameTimeStarted <= 1000)
-                    {
-                        GameFiber.Yield();
-                    }
+                    return null;
                 }
+                uint hashKey = Game.GetHashKey(PersonType.ModelName);
                 createdPed = NativeFunction.Natives.CREATE_PED_INSIDE_VEHICLE<Ped>(SpawnedVehicle, 26, hashKey, seat, true, true);
             }
             else
             {
+                if (!EnsureModelLoaded(PersonType.ModelName, 1500))
+                {
+                    return null;
+                }
                 createdPed = new Ped(PersonType.ModelName, new Vector3(CreatePos.X, CreatePos.Y, CreatePos.Z), SpawnLocation.Heading);
             }
             EntryPoint.SpawnedEntities.Add(createdPed);
@@ -300,27 +328,27 @@ public class LESpawnTask : SpawnTask
             {
                 createdPed = new Ped(PersonType.ModelName, new Vector3(CreatePos.X, CreatePos.Y, CreatePos.Z), SpawnLocation.Heading);
             }
-           // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 2");
+            // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 2");
             EntryPoint.SpawnedEntities.Add(createdPed);
             GameFiber.Yield();
             NativeFunction.Natives.SET_MODEL_AS_NO_LONGER_NEEDED(Game.GetHashKey(PersonType.ModelName));
             if (createdPed.Exists())
             {
-               // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 3");
+                // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 3");
                 SetupPed(createdPed);
                 if (!createdPed.Exists())
                 {
                     return null;
                 }
                 PedExt Person = SetupAgencyAnimal(createdPed);
-               // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 4");
+                // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 4");
                 PersonType.SetPedVariation(createdPed, null, true);//no head data for canines
                 GameFiber.Yield();
                 CreatedPeople.Add(Person);
-               // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 5");
+                // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 5");
                 return Person;
             }
-           // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 6 FAIL");
+            // EntryPoint.WriteToConsole($"LE SPAWN TASK CreateCanine 6 FAIL");
             return null;
         }
         catch (Exception ex)
@@ -346,6 +374,10 @@ public class LESpawnTask : SpawnTask
             }
 
             //EntryPoint.WriteToConsole($"LE SPAWN TASK POSITION OF SPAWN {Position} WaterPosition:{SpawnLocation.WaterPosition} InitialPosition:{SpawnLocation.InitialPosition} ISWater:{SpawnLocation.IsWater} DebugWaterHeight{SpawnLocation.DebugWaterHeight}");
+            if (!EnsureModelLoaded(VehicleType.ModelName, 1500))
+            {
+                return null;
+            }
             SpawnedVehicle = new Vehicle(VehicleType.ModelName, Position, SpawnLocation.Heading);
             EntryPoint.SpawnedEntities.Add(SpawnedVehicle);
             GameFiber.Yield();
@@ -376,7 +408,7 @@ public class LESpawnTask : SpawnTask
             if (IsOffDutySpawn)
             {
                 //EntryPoint.WriteToConsole($"OFF DUTY SPAWN PLATE UPDATE FOR {CreatedVehicle.Handle}", 0);
-                CreatedVehicle.UpdatePlateType(true, World.ModDataFileManager.Zones, World.ModDataFileManager.PlateTypes,true, true);
+                CreatedVehicle.UpdatePlateType(true, World.ModDataFileManager.Zones, World.ModDataFileManager.PlateTypes, true, true);
             }
             else
             {
@@ -440,22 +472,22 @@ public class LESpawnTask : SpawnTask
         bool isMale = PersonType.IsMale(Pedestrian);
         Cop PrimaryCop = new Cop(Pedestrian, Settings, Pedestrian.Health, Agency, true, Crimes, Weapons, Names.GetRandomName(isMale), PersonType.ModelName, World);
 
-        if(IsMarshalMember)
+        if (IsMarshalMember)
         {
             PrimaryCop.IsMarshalTaskForceMember = true;
         }
-        if(IsOffDutySpawn)
+        if (IsOffDutySpawn)
         {
             PrimaryCop.IsOffDuty = true;
         }
         SpawnedCops.Add(PrimaryCop);
         World.Pedestrians.AddEntity(PrimaryCop);
         float sightDistance = Settings.SettingsManager.PoliceSettings.SightDistance;
-        if(VehicleType != null && (VehicleType.IsHelicopter || VehicleType.IsPlane))
+        if (VehicleType != null && (VehicleType.IsHelicopter || VehicleType.IsPlane))
         {
             sightDistance = Settings.SettingsManager.PoliceSettings.SightDistance_Aircraft;
         }
-        if(PersonType.OverrideSightDistance > 1.0f)
+        if (PersonType.OverrideSightDistance > 1.0f)
         {
             sightDistance = PersonType.OverrideSightDistance;
             //EntryPoint.WriteToConsole($"OverrideSightDistance {sightDistance} IN THE COPS");

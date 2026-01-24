@@ -158,6 +158,29 @@ public class WorldSettings : ISettingsDefaultable
     [Description("Sleep (ms) between IPL request batches while loading. Lower loads faster but may pop/stutter; higher loads smoother but later. Default: 200.")]
     public int SeamlessCayoIplBatchDelayMs { get; set; }
 
+    [Description("If enabled, uses an adaptive IPL scheduler (token-bucket + ETA-based ramp) instead of fixed batch sizes. This reduces load spikes and improves stability.")]
+    public bool SeamlessCayoUseAdaptiveIplScheduler { get; set; }
+    [Description("Adaptive scheduler tick interval (ms). Lower = more responsive but more CPU. Default: 50.")]
+    public int SeamlessCayoIplAdaptiveTickMs { get; set; }
+    [Description("Hard cap on IPL requests per adaptive scheduler tick (burst limiter). Default: 6.")]
+    public int SeamlessCayoIplMaxRequestsPerTick { get; set; }
+    [Description("Hard cap on adaptive token-bucket burst size (max queued IPL requests). Default: 12.")]
+    public int SeamlessCayoIplMaxBurstRequests { get; set; }
+
+    [Description("Adaptive scheduler MIN request rate (requests/sec) in the far/base phase. Default: 1.")]
+    public int SeamlessCayoIplMinRequestsPerSecondFar { get; set; }
+    [Description("Adaptive scheduler MIN request rate (requests/sec) in the mid/detail phase. Default: 2.")]
+    public int SeamlessCayoIplMinRequestsPerSecondMid { get; set; }
+    [Description("Adaptive scheduler MIN request rate (requests/sec) in the near phase. Default: 4.")]
+    public int SeamlessCayoIplMinRequestsPerSecondNear { get; set; }
+
+    [Description("Adaptive scheduler MAX request rate (requests/sec) in the far/base phase. Default: 4.")]
+    public int SeamlessCayoIplMaxRequestsPerSecondFar { get; set; }
+    [Description("Adaptive scheduler MAX request rate (requests/sec) in the mid/detail phase. Default: 8.")]
+    public int SeamlessCayoIplMaxRequestsPerSecondMid { get; set; }
+    [Description("Adaptive scheduler MAX request rate (requests/sec) in the near phase. Default: 12.")]
+    public int SeamlessCayoIplMaxRequestsPerSecondNear { get; set; }
+
     [Description("If enabled, and h4_islandx is detected active while you are far from the island, the controller will attempt to unload the island even if it was loaded by another system. Use with caution if other mods intentionally keep Cayo loaded. Default: false.")]
     public bool SeamlessCayoForceUnloadIfIslandActiveWhileFar { get; set; }
 
@@ -217,6 +240,19 @@ public class WorldSettings : ISettingsDefaultable
         SeamlessCayoIplBatchSizeFar = 2;
         SeamlessCayoIplBatchSizeNear = 6;
         SeamlessCayoIplBatchDelayMs = 200;
+
+        SeamlessCayoUseAdaptiveIplScheduler = true;
+        SeamlessCayoIplAdaptiveTickMs = 50;
+        SeamlessCayoIplMaxRequestsPerTick = 6;
+        SeamlessCayoIplMaxBurstRequests = 12;
+
+        SeamlessCayoIplMinRequestsPerSecondFar = 1;
+        SeamlessCayoIplMinRequestsPerSecondMid = 2;
+        SeamlessCayoIplMinRequestsPerSecondNear = 4;
+
+        SeamlessCayoIplMaxRequestsPerSecondFar = 4;
+        SeamlessCayoIplMaxRequestsPerSecondMid = 8;
+        SeamlessCayoIplMaxRequestsPerSecondNear = 12;
         SeamlessCayoForceUnloadIfIslandActiveWhileFar = false;
         SeamlessCayoAggressiveUnloadAllIpls = false;
         SeamlessCayoUnloadDelayMs = 5000;
