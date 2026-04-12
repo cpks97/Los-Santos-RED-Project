@@ -3408,6 +3408,45 @@ new ShopMenu("JDM-X", "JDMX", new List<MenuItem>() {
         new MenuItem("Shrewsbury A7-4K",856) { IsIllicilt = true } }),
 });
     }
+    private void ArmsDealerMenus()
+    {
+
+
+        ShopMenuGroup ArmsDealerMenuGroup = new ShopMenuGroup(StaticStrings.ArmsDealerMenuGroupID, "Arms Dealer Menus", StaticStrings.ArmsDealerMenuID, new List<PercentageSelectShopMenu>()
+        {
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 1",  new List<MenuItem>() {
+                    new MenuItem("Crate of AKs",5500, 5000) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 18, NumberOfItemsToSellToPlayer = 0  }}),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 2", new List<MenuItem>() {
+                    new MenuItem("Crate of Rifles", 7000, 6700) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 13, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 3", new List<MenuItem>() {
+                    new MenuItem("9mm Ammo", 30, 28) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 16, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 4", new List<MenuItem>() {
+                    new MenuItem("7.62mm Ammo", 30, 28) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 13, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 5", new List<MenuItem>() {
+                    new MenuItem("12 Gauge Ammo", 30, 28) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 10, NumberOfItemsToSellToPlayer = 0 } }),0),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsDealerMenuID, "Arms Dealer 6", new List<MenuItem>() {
+                    new MenuItem("Crate of ammunition",700, 650) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 7, NumberOfItemsToSellToPlayer = 0 } }),0),
+         });
+        PossibleShopMenus.ShopMenuGroupList.Add(ArmsDealerMenuGroup);
+
+
+        ShopMenuGroup ArmsCustomerMenuGroup = new ShopMenuGroup(StaticStrings.ArmsCustomerMenuGroupID, "Arms Customer Menus", StaticStrings.ArmsCustomerMenuID, new List<PercentageSelectShopMenu>()
+        {
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 1", new List<MenuItem>() {
+                    new MenuItem("Crate of AKs",0, 7000) { IsIllicilt = true,NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 2", new List<MenuItem>() {
+                    new MenuItem("Crate of Rifles",0, 10000) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 3", new List<MenuItem>() {
+                    new MenuItem("9mm Ammo",0, 200) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 4", new List<MenuItem>() {
+                    new MenuItem("7.62mm Ammo",0, 200) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 }}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 5", new List<MenuItem>() {
+                    new MenuItem("12 Gauge Ammo",0, 200) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 },}),400),
+            new PercentageSelectShopMenu(new ShopMenu(StaticStrings.ArmsCustomerMenuID, "Arms Customer 6", new List<MenuItem>() {
+                    new MenuItem("Crate of ammunition",0, 2300) { IsIllicilt = true, NumberOfItemsToPurchaseFromPlayer = 200 },}),400),
+        });
+        PossibleShopMenus.ShopMenuGroupList.Add(ArmsCustomerMenuGroup);
+    }
     private void DrugDealerMenus()
     {
 

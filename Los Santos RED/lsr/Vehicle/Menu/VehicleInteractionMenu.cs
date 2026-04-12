@@ -86,7 +86,7 @@ public class VehicleInteractionMenu
             UIMenuItem outfitMenuItem = new UIMenuItem("Manage Outfit");
             outfitMenuItem.Activated += (sender, args) =>
             {
-                player.OutfitManager.CreateOutfitMenu(MenuPool, InventoryWeaponHeaderMenu, false, false);
+                player.OutfitManager.CreateOutfitMenu(MenuPool, InventoryWeaponHeaderMenu, false, false, true, false);
             };
             InventoryWeaponHeaderMenu.AddItem(outfitMenuItem);
         }
