@@ -42,7 +42,14 @@ namespace LosSantosRED.lsr.Player.ActiveTasks
         }
         public void Dispose()
         {
-            SpawnedPeds.ForEach(x => { x.SetNonPersistent(); x.DeleteBlip(); });
+            SpawnedPeds?.ForEach(x => 
+            { 
+                if(x!=null)
+                {
+                    x.SetNonPersistent(); 
+                    x.DeleteBlip();
+                }
+            });
             GangDispatcher.IsBeingRaided = false;
         }
 
