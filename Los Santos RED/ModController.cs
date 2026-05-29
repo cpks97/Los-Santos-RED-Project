@@ -147,11 +147,11 @@ namespace LosSantosRED.lsr
             DisplayLoadSuccessfulMessage();
 
             //string ConfigName = string.IsNullOrEmpty(Config.ConfigName) ? "No Config" : Config.ConfigName + " Config";
-            
+
 
             //if (!string.IsNullOrEmpty(Config.ConfigName))
             //{
-            //    Game.DisplayNotification($"~s~Los Santos ~r~RED~s~ {ConfigName} Loaded");
+            //    Game.DisplayNotification($"~s~Los Santos ~r~RED~s~ ~s~Project {ConfigName} Loaded");
             //    EntryPoint.WriteToConsole($"Loaded {ConfigName}", 0); 
             //}
         }
@@ -180,7 +180,7 @@ namespace LosSantosRED.lsr
 
 
 
-            Game.DisplayNotification("~s~Los Santos ~r~RED ~s~Deactivated");
+            Game.DisplayNotification("~s~Los Santos ~r~RED ~s~Project ~s~Deactivated");
             EntryPoint.WriteToConsole($"Has Been Deactivated", 0);
         }
         public void CrashUnload()
@@ -426,7 +426,7 @@ namespace LosSantosRED.lsr
                 }
                 catch (Exception e)
                 {
-                    Game.DisplayNotification("CHAR_BLANK_ENTRY", "CHAR_BLANK_ENTRY", "~o~Error", "Los Santos ~r~RED", "Los Santos ~r~RED ~s~has crashed and needs to be restarted");
+                    Game.DisplayNotification("CHAR_BLANK_ENTRY", "CHAR_BLANK_ENTRY", "~o~Error", "Los Santos ~r~RED Project", "Los Santos ~r~RED ~s~Project ~s~has crashed and needs to be restarted");
                     EntryPoint.WriteToConsole("Error: " + e.Message + " : " + e.StackTrace, 0);
                     Dispose();
                 }
@@ -448,7 +448,7 @@ namespace LosSantosRED.lsr
         }
         private void DisplayCrashMessage()
         {
-            Game.DisplayNotification("CHAR_BLANK_ENTRY", "CHAR_BLANK_ENTRY", "~o~Error", "Los Santos ~r~RED", "Los Santos ~r~RED ~s~has crashed and needs to be restarted");
+            Game.DisplayNotification("CHAR_BLANK_ENTRY", "CHAR_BLANK_ENTRY", "~o~Error", "Los Santos ~r~RED ~s~Project", "Los Santos ~r~RED ~s~Project ~s~has crashed and needs to be restarted");
         }
         private void DisplayLoadSuccessfulMessage()
         {
@@ -459,8 +459,8 @@ namespace LosSantosRED.lsr
                 Game.RemoveNotification(EntryPoint.NotificationID);
             }
             Game.DisplayNotification(
-                $"~s~Los Santos ~r~RED ~s~v{fvi.FileVersion} " +
-                $"~n~By ~g~Greskrendtregk ~s~Has Loaded Successfully.");
+                $"~s~Los Santos ~r~RED ~s~Project ~s~v{fvi.FileVersion} " +
+                $"~n~By ~p~CPKS ~s~& ~g~LSRP Team ~s~Has Loaded Successfully.");
 
             string controlString =
                 $"Main Menu (Keyboard): ~{ModDataFileManager.Settings.SettingsManager.KeySettings.MenuKey.GetInstructionalId()}~" +

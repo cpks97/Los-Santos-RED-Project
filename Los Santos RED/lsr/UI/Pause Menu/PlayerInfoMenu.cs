@@ -57,7 +57,7 @@ public class PlayerInfoMenu
     }
     public void Setup()
     {
-        tabView = new TabView("Los Santos ~r~RED~s~ Information");
+        tabView = new TabView("Los Santos ~r~RED~s~ ~s~Project Information");
         tabView.Tabs.Clear();
         tabView.ScrollTabs = true;
         tabView.OnMenuClose += (s, e) =>

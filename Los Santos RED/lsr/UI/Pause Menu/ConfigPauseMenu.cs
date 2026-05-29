@@ -29,7 +29,7 @@ public class ConfigPauseMenu
     }
     public void Setup()
     {
-        tabView = new TabView("Los Santos ~r~RED~s~ Configuration Manager");
+        tabView = new TabView("Los Santos ~r~RED~s~ ~s~Project Configuration Manager");
         tabView.Tabs.Clear();
         tabView.ScrollTabs = true;
         tabView.OnMenuClose += (s, e) =>

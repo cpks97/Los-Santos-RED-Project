@@ -25,7 +25,7 @@ public class LandlordMenu
     }
     public void Setup()
     {
-        tabView = new TabView("Los Santos ~r~RED~s~ Property Manager");
+        tabView = new TabView("Los Santos ~r~RED~s~ ~s~Project Property Manager");
         tabView.ScrollTabs = true;
         tabView.OnMenuClose += (s, e) =>
         {

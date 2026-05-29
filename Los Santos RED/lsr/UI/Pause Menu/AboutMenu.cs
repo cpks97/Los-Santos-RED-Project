@@ -21,7 +21,7 @@ public class AboutMenu
     }
     public void Setup()
     {
-        tabView = new TabView("About Los Santos ~r~RED~s~");
+        tabView = new TabView("About Los Santos ~r~RED~s~ ~s~Project");
         tabView.Tabs.Clear();
         tabView.OnMenuClose += (s, e) =>
         {

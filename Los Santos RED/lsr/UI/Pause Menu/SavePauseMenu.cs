@@ -63,7 +63,7 @@ public class SavePauseMenu
     }
     public void Setup()
     {
-        tabView = new TabView("Los Santos ~r~RED~s~ Game Save Manager");
+        tabView = new TabView("Los Santos ~r~RED~s~ ~s~Project Game Save Manager");
         tabView.Tabs.Clear();
         tabView.ScrollTabs = true;
         tabView.OnMenuClose += (s, e) =>

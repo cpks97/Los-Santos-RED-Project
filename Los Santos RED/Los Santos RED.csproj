@@ -118,16 +118,14 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAudio">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\NAudio.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RAGENativeUI">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\RAGENativeUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\RAGENativeUI.dll</HintPath>
     </Reference>
     <Reference Include="RagePluginHookSDK">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V\SDK\RagePluginHookSDK.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\SDK\RagePluginHookSDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

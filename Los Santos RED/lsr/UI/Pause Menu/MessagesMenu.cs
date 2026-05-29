@@ -49,7 +49,7 @@ public class MessagesMenu
     }
     public void Setup()
     {
-        tabView = new TabView("Los Santos ~r~RED~s~ Phone & Messages");
+        tabView = new TabView("Los Santos ~r~RED~s~ ~s~Project Phone & Messages");
         tabView.Tabs.Clear();
         tabView.ScrollTabs = true;
         tabView.OnMenuClose += (s, e) =>
