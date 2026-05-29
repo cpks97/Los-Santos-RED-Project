@@ -554,7 +554,7 @@ namespace LosSantosRED.lsr.Player.ActiveTasks
             if (VictimIsAtHome)
             {
                 Replies = new List<string>() {
-                    $"Got a witness that needs to disappear. Home address is ~p~{VictimLocation.FullStreetAddress}~s~. Name ~y~{VictimName}~s~. ${MoneyToRecieve}",
+                    $"Got a hit for you here, target is at their home. Their address is ~p~{VictimLocation.FullStreetAddress}~s~. Name ~y~{VictimName}~s~. ${MoneyToRecieve}",
                     $"Get to the house at ~p~{VictimLocation.FullStreetAddress}~s~ and get rid of ~y~{VictimName}~s~. ${MoneyToRecieve} on complation",
                     $"We need to you shut this guy up before he squeals. He lives at ~p~{VictimLocation.FullStreetAddress}~s~. The name is ~y~{VictimName}~s~. Payment of ${MoneyToRecieve}",
                     $"~y~{VictimName}~s~ is living at ~p~{VictimLocation.FullStreetAddress}~s~. They should be home. You know what to do. ${MoneyToRecieve}",
@@ -564,7 +564,7 @@ namespace LosSantosRED.lsr.Player.ActiveTasks
             else
             {
                 Replies = new List<string>() {
-                    $"Got a witness that needs to disappear. They hang around ~p~{VictimLocation.Name}~s~. Address is ~p~{VictimLocation.FullStreetAddress}~s~. Name ~y~{VictimName}~s~. ${MoneyToRecieve}",
+                    $"Got a hit for you, they're hanging around ~p~{VictimLocation.Name}~s~. Address is ~p~{VictimLocation.FullStreetAddress}~s~. Name ~y~{VictimName}~s~. ${MoneyToRecieve}",
                     $"Get to ~p~{VictimLocation.Name}~s~ on ~p~{VictimLocation.FullStreetAddress}~s~ and get rid of ~y~{VictimName}~s~. ${MoneyToRecieve} on complation",
                     $"We need to you shut this guy up before he squeals. He's at ~p~{VictimLocation.Name}~s~ ~p~{VictimLocation.FullStreetAddress}~s~. The name is ~y~{VictimName}~s~. Payment of ${MoneyToRecieve}",
                     $"~y~{VictimName}~s~ is at ~p~{VictimLocation.Name}~s~, address is ~p~{VictimLocation.FullStreetAddress}~s~. You know what to do. ${MoneyToRecieve}",
