@@ -556,9 +556,9 @@ namespace LosSantosRED.lsr.Player.ActiveTasks
                 Replies = new List<string>() {
                     $"Got a hit for you here, target is at their home. Their address is ~p~{VictimLocation.FullStreetAddress}~s~. Name ~y~{VictimName}~s~. ${MoneyToRecieve}",
                     $"Get to the house at ~p~{VictimLocation.FullStreetAddress}~s~ and get rid of ~y~{VictimName}~s~. ${MoneyToRecieve} on complation",
-                    $"We need to you shut this guy up before he squeals. He lives at ~p~{VictimLocation.FullStreetAddress}~s~. The name is ~y~{VictimName}~s~. Payment of ${MoneyToRecieve}",
+                    $"We got a contract that's just came in. Target lives at ~p~{VictimLocation.FullStreetAddress}~s~. The name is ~y~{VictimName}~s~. Payment of ${MoneyToRecieve}",
                     $"~y~{VictimName}~s~ is living at ~p~{VictimLocation.FullStreetAddress}~s~. They should be home. You know what to do. ${MoneyToRecieve}",
-                    $"Need you to make sure ~y~{VictimName}~s~ doesn't make it to the deposition, they live at ~p~{VictimLocation.FullStreetAddress}~s~. ${MoneyToRecieve}",
+                    $"Need a guy whacked, their name is ~y~{VictimName}~s~ and they live at ~p~{VictimLocation.FullStreetAddress}~s~. ${MoneyToRecieve}",
                      };
             }
             else
@@ -566,9 +566,9 @@ namespace LosSantosRED.lsr.Player.ActiveTasks
                 Replies = new List<string>() {
                     $"Got a hit for you, they're hanging around ~p~{VictimLocation.Name}~s~. Address is ~p~{VictimLocation.FullStreetAddress}~s~. Name ~y~{VictimName}~s~. ${MoneyToRecieve}",
                     $"Get to ~p~{VictimLocation.Name}~s~ on ~p~{VictimLocation.FullStreetAddress}~s~ and get rid of ~y~{VictimName}~s~. ${MoneyToRecieve} on complation",
-                    $"We need to you shut this guy up before he squeals. He's at ~p~{VictimLocation.Name}~s~ ~p~{VictimLocation.FullStreetAddress}~s~. The name is ~y~{VictimName}~s~. Payment of ${MoneyToRecieve}",
+                    $"Need you to take someone out! He's at ~p~{VictimLocation.Name}~s~ ~p~{VictimLocation.FullStreetAddress}~s~. The name is ~y~{VictimName}~s~. Payment of ${MoneyToRecieve}",
                     $"~y~{VictimName}~s~ is at ~p~{VictimLocation.Name}~s~, address is ~p~{VictimLocation.FullStreetAddress}~s~. You know what to do. ${MoneyToRecieve}",
-                    $"Need you to make sure ~y~{VictimName}~s~ doesn't make it to the deposition, they are currently at ~p~{VictimLocation.Name}~s~ on ~p~{VictimLocation.FullStreetAddress}~s~. ${MoneyToRecieve}",
+                    $"Got someone called ~y~{VictimName}~s~ who needs to not wake up again, they're currently at ~p~{VictimLocation.Name}~s~ on ~p~{VictimLocation.FullStreetAddress}~s~. ${MoneyToRecieve}",
                      };
             }
 
