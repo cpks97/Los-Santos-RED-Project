@@ -194,6 +194,39 @@ public class PossibleLocations
         AllLocations.AddRange(TattooShops);
         return AllLocations;
     }
+    public List<GameLocation> VictimTaskLocations()
+    {
+        List<GameLocation> AllLocations = new List<GameLocation>();
+        AllLocations.AddRange(Banks);
+        AllLocations.AddRange(Bars);
+        AllLocations.AddRange(CarDealerships);
+        AllLocations.AddRange(CityHalls);
+        AllLocations.AddRange(ConvenienceStores);
+        AllLocations.AddRange(Dispensaries);
+        AllLocations.AddRange(GasStations);
+        AllLocations.AddRange(HardwareStores);
+        AllLocations.AddRange(HeadShops);
+        AllLocations.AddRange(Hospitals);
+        AllLocations.AddRange(Hotels);
+        AllLocations.AddRange(LiquorStores);
+        AllLocations.AddRange(PawnShops);
+        AllLocations.AddRange(Pharmacies);
+        AllLocations.AddRange(Restaurants);
+        AllLocations.AddRange(Businesses);
+        AllLocations.AddRange(Landmarks);
+        AllLocations.AddRange(SportingGoodsStores);
+        AllLocations.AddRange(BarberShops);
+        AllLocations.AddRange(PlasticSurgeryClinics);
+        AllLocations.AddRange(TattooShops);
+        AllLocations.AddRange(IllicitMarketplaces);
+        AllLocations.AddRange(ScrapYards);
+        AllLocations.AddRange(CarCrushers);
+        AllLocations.AddRange(SubwayStations);
+        AllLocations.AddRange(GamblingDens);
+        AllLocations.AddRange(ClothingShops);
+        AllLocations.AddRange(DeadDrops);
+        return AllLocations;
+    }
     public List<GameLocation> RobberyTaskLocations()
     {
         List<GameLocation> AllLocations = new List<GameLocation>();

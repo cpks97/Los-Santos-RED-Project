@@ -42,7 +42,12 @@ public class TaskSettings : ISettingsDefaultable
     [Description("Complications Percent for the Witness Elimination task from Officer Friendly")]
     public float OfficerFriendlyWitnessEliminationComplicationsPercentage { get; set; }
 
-
+    [Description("Minimum payment amount for the Contract Killer task from The Fixer")]
+    public int ContractKillerPaymentMin { get; set; }
+    [Description("Maximum payment amount for the Contract Killer task from The Fixer")]
+    public int ContractKillerPaymentMax { get; set; }
+    [Description("Complications Percent for the Contract Killer task from The Fixer")]
+    public float ContractKillerComplicationsPercentage { get; set; }
 
 
 
@@ -112,6 +117,9 @@ public class TaskSettings : ISettingsDefaultable
         OfficerFriendlyCopHitPaymentMax = 4500;// 20000;
         OfficerFriendlyCopHitComplicationsPercentage = 25f;
 
+        ContractKillerPaymentMin = 3000;// 10000;
+        ContractKillerPaymentMax = 5000;// 20000;
+        ContractKillerComplicationsPercentage = 40f;
 
         UndergroundGunsGunPickupPaymentMin = 2000;// 5000;
         UndergroundGunsGunPickupPaymentMax = 4000;// 10000;

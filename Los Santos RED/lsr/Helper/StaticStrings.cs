@@ -37,6 +37,7 @@ public static class StaticStrings
 
     //Contacts
     public static readonly string OfficerFriendlyContactName = "Officer Friendly";//these have gotta go, but where?
+    public static readonly string FixerContactName = "Job Fixer";//these have gotta go, but where?
     public static readonly string UndergroundGunsContactName = "Underground Guns";//these have gotta go, but where?
     public static readonly string EmergencyServicesContactName = "911 - Emergency Services";//these have gotta go, but where?  
     public static readonly string VehicleExporterContactName = "Vehicle Exports";//these have gotta go, but where?

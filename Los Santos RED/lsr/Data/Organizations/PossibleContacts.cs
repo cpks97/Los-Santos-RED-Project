@@ -15,6 +15,7 @@ public class PossibleContacts
     public List<GunDealerContact> GunDealerContacts { get; private set; } = new List<GunDealerContact>();
     public EmergencyServicesContact EmergencyServicesContact { get; set; } = new EmergencyServicesContact();
     public CorruptCopContact CorruptCopContact { get; set; } = new CorruptCopContact();
+    public FixerContact FixerContact { get; set; } = new FixerContact();
     public List<KillerContact> KillerContacts { get; private set; } = new List<KillerContact>();
     public List<VehicleExporterContact> VehicleExporterContacts { get; private set; } = new List<VehicleExporterContact>();
     public List<TaxiServiceContact> TaxiServiceContacts { get; private set; } = new List<TaxiServiceContact>();
@@ -28,6 +29,7 @@ public class PossibleContacts
         AllLocations.AddRange(VehicleExporterContacts);
         AllLocations.AddRange(TaxiServiceContacts);
         AllLocations.Add(CorruptCopContact);
+        AllLocations.Add(FixerContact);
         return AllLocations;
     }
 }

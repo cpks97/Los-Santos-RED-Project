@@ -18,6 +18,7 @@ public class Contacts : IContacts
     private TaxiServiceContact rydeMeContact;
     private TaxiServiceContact schlechtContact;
     private CorruptCopContact corruptCopContact;
+    private FixerContact fixerContact;
     private GunDealerContact gunDealerContact;
 
     public PossibleContacts PossibleContacts { get; private set; }
@@ -90,6 +91,7 @@ public class Contacts : IContacts
         downtownCabContact = new TaxiServiceContact(StaticStrings.DowntownCabCoContactName, "CHAR_TAXI") { FullNumber = "3235555555", Number = "5555555", IsDefault = true };
         gunDealerContact = new GunDealerContact(StaticStrings.UndergroundGunsContactName);
         corruptCopContact = new CorruptCopContact(StaticStrings.OfficerFriendlyContactName);
+        fixerContact = new FixerContact(StaticStrings.FixerContactName, "CHAR_LESTER_DEATHWISH");
         vehicleExporterContact = new VehicleExporterContact(StaticStrings.VehicleExporterContactName);
         knowayContact = new TaxiServiceContact(StaticStrings.KnowayContactName, "CHAR_BLANK_ENTRY") { FullNumber = "3235552567", Number = "5552567", IsDefault = true };
         rydeMeContact = new TaxiServiceContact(StaticStrings.RydeMeContactName, "CHAR_BLANK_ENTRY") { FullNumber = "3235558295", Number = "5558295", IsDefault = true };
@@ -101,6 +103,7 @@ public class Contacts : IContacts
         PossibleContacts = new PossibleContacts();
         PossibleContacts.GunDealerContacts.Add(gunDealerContact);
         PossibleContacts.CorruptCopContact = corruptCopContact;
+        PossibleContacts.FixerContact = fixerContact;
         PossibleContacts.VehicleExporterContacts.Add(vehicleExporterContact);
         PossibleContacts.EmergencyServicesContact = emergencyServicesContact;
         PossibleContacts.TaxiServiceContacts.Add(downtownCabContact);

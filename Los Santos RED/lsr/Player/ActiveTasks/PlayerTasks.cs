@@ -29,6 +29,7 @@ public class PlayerTasks
     private List<IPlayerTaskGroup> PlayerTaskGroups = new List<IPlayerTaskGroup>();
     public GangTasks GangTasks { get; private set; }
     public CorruptCopTasks CorruptCopTasks { get; private set; }
+    public FixerTasks FixerTasks { get; private set; }
     public UndergroundGunsTasks UndergroundGunsTasks { get; private set; }
     public VehicleExporterTasks VehicleExporterTasks { get; private set; }
     public List<PlayerTask> PlayerTaskList { get; set; } = new List<PlayerTask>();
@@ -48,12 +49,14 @@ public class PlayerTasks
         PedGroups = pedGroups;
         GangTasks = new GangTasks(Player,Time,Gangs,this,PlacesOfInterest, ActiveDrops, Settings,World,Crimes, modItems, ShopMenus, Weapons,Names,PedGroups, agencies, gangTerritories, zones);
         CorruptCopTasks = new CorruptCopTasks(Player, Time, Gangs, this, PlacesOfInterest, ActiveDrops, Settings, World, Crimes, Names, Weapons, ShopMenus);
+        FixerTasks = new FixerTasks(Player, Time, Gangs, this, PlacesOfInterest, ActiveDrops, Settings, World, Crimes, Names, Weapons, ShopMenus);
         UndergroundGunsTasks = new UndergroundGunsTasks(Player, Time, Gangs, this, PlacesOfInterest, ActiveDrops, Settings, World, Crimes);
         VehicleExporterTasks = new VehicleExporterTasks(Player, Time, Gangs, this, PlacesOfInterest, ActiveDrops, Settings, World, Crimes, modItems);
         PlayerTaskGroups = new List<IPlayerTaskGroup>
         {
             GangTasks,
             CorruptCopTasks,
+            FixerTasks,
             UndergroundGunsTasks,
             VehicleExporterTasks
         };

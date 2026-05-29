@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>E:\GTA5\Plugins\</OutputPath>
+    <OutputPath>Releases\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -284,6 +284,8 @@
     <Compile Include="lsr\Locations\Places\GameLocations\VehicleLocations\WheelVehicleClassModKitType.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\VehicleLocations\WheelVehicleModKitType.cs" />
     <Compile Include="lsr\Locations\Places\Interface\IPayoutDisbursable.cs" />
+    <Compile Include="lsr\Player\ActiveTasks\Contract Killer\ContractKillerTask.cs" />
+    <Compile Include="lsr\Player\ActiveTasks\Contract Killer\FixerTasks.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangArsonTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangRacketeeringTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\Generic\WeaponMeetTask.cs" />
@@ -298,6 +300,8 @@
     <Compile Include="lsr\Player\Activity\Items\IngestActivityNew.cs" />
     <Compile Include="lsr\Player\Activity\Pickpocket.cs" />
     <Compile Include="lsr\Player\Button Prompts\GenericMinigame.cs" />
+    <Compile Include="lsr\Player\Cellphone\Contacts\FixerContact.cs" />
+    <Compile Include="lsr\Player\Cellphone\Interactions\JobFixerInteraction.cs" />
     <Compile Include="lsr\Player\Crafting\Craft.cs" />
     <Compile Include="lsr\Player\Gambling\Blackjack Games\BlackJackGame.cs" />
     <Compile Include="lsr\Player\Gambling\Blackjack Games\BlackjackGameUI.cs" />
@@ -625,6 +629,7 @@
     <Compile Include="lsr\Player\Racing\VehicleRacer.cs" />
     <Compile Include="lsr\Player\Racing\VehicleRaceStartingPosition.cs" />
     <Compile Include="lsr\Player\Racing\VehicleRaceTrack.cs" />
+    <Compile Include="lsr\Player\Relationships\FixerRelationship.cs" />
     <Compile Include="lsr\Player\Respawning\BribeActivity.cs" />
     <Compile Include="lsr\Player\Respawning\PedGeneralInteract.cs" />
     <Compile Include="lsr\Player\Respawning\PedPlayerInteract.cs" />
