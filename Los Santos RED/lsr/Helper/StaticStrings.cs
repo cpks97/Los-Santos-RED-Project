@@ -133,6 +133,10 @@ public static class StaticStrings
     public static readonly string LosSantosAirCarrierID = "LosSantosAir";
     public static readonly string FlyUSCarrierID = "FlyUS";
     public static readonly string AdiosAirlinesCarrierID = "Adios Airlines";
+    public static readonly string LosSantosFerryCarrierID = "Los Santos Ferry";
+    public static readonly string CayoPericoFerryCarrierID = "Cayo Perico Ferry";
+    public static readonly string LosSantosTransitCarrierID = "Los Santos Transit";
+    public static readonly string DashoundCoachCarrierID = "Dashound Coach";
 
     //Menus
     public static readonly string DrugDealerMenuID = "DrugDealerMenu";

@@ -32,7 +32,9 @@ public class PossibleLocations
     public List<HardwareStore> HardwareStores { get; private set; } = new List<HardwareStore>();
     public List<PawnShop> PawnShops { get; private set; } = new List<PawnShop>();
     public List<Landmark> Landmarks { get; private set; } = new List<Landmark>();
-   // public List<BeautyShop> BeautyShops { get; private set; } = new List<BeautyShop>();
+    public List<DrugMeetSpot> DrugMeetSpots { get; private set; } = new List<DrugMeetSpot>();
+    public List<WeaponMeetSpot> WeaponMeetSpots { get; private set; } = new List<WeaponMeetSpot>();
+    // public List<BeautyShop> BeautyShops { get; private set; } = new List<BeautyShop>();
     public List<Bank> Banks { get; private set; } = new List<Bank>();
     public List<ConvenienceStore> ConvenienceStores { get; private set; } = new List<ConvenienceStore>();
     public List<GasStation> GasStations { get; private set; } = new List<GasStation>();
@@ -55,6 +57,8 @@ public class PossibleLocations
     public List<Morgue> Morgues { get; private set; } = new List<Morgue>();
     public List<SportingGoodsStore> SportingGoodsStores { get; private set; } = new List<SportingGoodsStore>();
     public List<Airport> Airports { get; private set; } = new List<Airport>();
+    public List<Dock> Docks { get; private set; } = new List<Dock>();
+    public List<Bus> Busses { get; private set; } = new List<Bus>();
     public List<IllicitMarketplace> IllicitMarketplaces { get; private set; } = new List<IllicitMarketplace>();
     public List<BlankLocation> BlankLocations { get; private set; } = new List<BlankLocation>();
     public List<MilitaryBase> MilitaryBases { get; private set; } = new List<MilitaryBase>();
@@ -126,6 +130,10 @@ public class PossibleLocations
         AllLocations.AddRange(Morgues);
         AllLocations.AddRange(SportingGoodsStores);
         AllLocations.AddRange(Airports);
+        AllLocations.AddRange(Docks);
+        AllLocations.AddRange(Busses);
+        AllLocations.AddRange(DrugMeetSpots);
+        AllLocations.AddRange(WeaponMeetSpots);
         AllLocations.AddRange(IllicitMarketplaces);
         AllLocations.AddRange(BlankLocations);
         AllLocations.AddRange(MilitaryBases);
@@ -213,7 +221,6 @@ public class PossibleLocations
         AllLocations.AddRange(Pharmacies);
         AllLocations.AddRange(Restaurants);
         AllLocations.AddRange(Businesses);
-        AllLocations.AddRange(Landmarks);
         AllLocations.AddRange(SportingGoodsStores);
         AllLocations.AddRange(BarberShops);
         AllLocations.AddRange(PlasticSurgeryClinics);
@@ -271,18 +278,14 @@ public class PossibleLocations
     {
         List<GameLocation> AllLocations = new List<GameLocation>();
         //AllLocations.AddRange(DeadDrops);
-        AllLocations.AddRange(IllicitMarketplaces);
-        AllLocations.AddRange(ScrapYards);
-        AllLocations.AddRange(CarCrushers);
+        AllLocations.AddRange(DrugMeetSpots);
         return AllLocations;
     }
     public List<GameLocation> WeaponMeetLocations()
     {
         List<GameLocation> AllLocations = new List<GameLocation>();
         //AllLocations.AddRange(DeadDrops);
-        AllLocations.AddRange(IllicitMarketplaces);
-        AllLocations.AddRange(ScrapYards);
-        AllLocations.AddRange(CarCrushers);
+        AllLocations.AddRange(DrugMeetSpots);
         return AllLocations;
     }
 }

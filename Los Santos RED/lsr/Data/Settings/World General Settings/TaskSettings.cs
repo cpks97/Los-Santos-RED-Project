@@ -137,8 +137,8 @@ public class TaskSettings : ISettingsDefaultable
         GangArsonEnemyTurfPercentage = 5f;
 
 
-        DrugMeetAmbushPercentageNeutral = 30f;
-        DrugMeetAmbushPercentageFriendly = 2f;
+        DrugMeetAmbushPercentageNeutral = 40f;
+        DrugMeetAmbushPercentageFriendly = 5f;
 
 
         DrugMeetPriceScalarMin = 0.8f;
@@ -147,14 +147,14 @@ public class TaskSettings : ISettingsDefaultable
         DrugMeetMin = 200;
         DrugMeetMax = 500;
 
-        WeaponMeetAmbushPercentageNeutral = 38f;
-        WeaponMeetAmbushPercentageFriendly = 2f;
+        WeaponMeetAmbushPercentageNeutral = 45f;
+        WeaponMeetAmbushPercentageFriendly = 5f;
 
         WeaponMeetPriceScalarMin = 0.8f;
         WeaponMeetPriceScalarMax = 1.2f;
 
         WeaponMeetMin = 5;
-        WeaponMeetMax = 10;
+        WeaponMeetMax = 100;
         DrugMeetMax = 2000;
         DugMeetContactGangBackupSpawnPercentage = 85f;
     }

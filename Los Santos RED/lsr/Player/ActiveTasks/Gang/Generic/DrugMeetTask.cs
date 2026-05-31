@@ -323,7 +323,7 @@ namespace LosSantosRED.lsr.Player.ActiveTasks
             }
             if(!OtherSpawnLocations.Any())// && IsAmbush)
             {
-                SpawnLocation fallbackspawnLocation = new SpawnLocation(DealingLocation.EntrancePosition.Around2D(50f));
+                SpawnLocation fallbackspawnLocation = new SpawnLocation(DealingLocation.EntrancePosition.Around2D(20f));
                 fallbackspawnLocation.GetClosestStreet(false);
                 fallbackspawnLocation.GetClosestSidewalk();
                 OtherSpawnLocations.Add(fallbackspawnLocation);

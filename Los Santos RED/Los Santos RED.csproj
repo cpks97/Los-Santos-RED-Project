@@ -118,14 +118,14 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAudio">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\NAudio.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RAGENativeUI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\RAGENativeUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\RAGENativeUI.dll</HintPath>
     </Reference>
     <Reference Include="RagePluginHookSDK">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\SDK\RagePluginHookSDK.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Rockstar Games\Grand Theft Auto V Legacy\SDK\RagePluginHookSDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -262,6 +262,11 @@
     <Compile Include="lsr\Locations\Places\ConditionalLocations\Civilian\CivilianConditionalLocation.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\BodyExport.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\Business.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\Bus\Bus.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\Bus\BusTravel.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\Dock\Dock.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\Dock\DockFerry.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\DrugMeetSpot.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\ePedFocusZone.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\MoveInteraction.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\OrbitCamera.cs" />
@@ -283,6 +288,7 @@
     <Compile Include="lsr\Locations\Places\GameLocations\VehicleLocations\VehicleWindowTintMenu.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\VehicleLocations\WheelVehicleClassModKitType.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\VehicleLocations\WheelVehicleModKitType.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\WeaponMeetSpot.cs" />
     <Compile Include="lsr\Locations\Places\Interface\IPayoutDisbursable.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Contract Killer\ContractKillerTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Contract Killer\FixerTasks.cs" />
