@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 [XmlInclude(typeof(KillerContact))]
 [XmlInclude(typeof(VehicleExporterContact))]
 [XmlInclude(typeof(TaxiServiceContact))]
+[XmlInclude(typeof(FixerContact))]
 public class PhoneContact
 {
 
