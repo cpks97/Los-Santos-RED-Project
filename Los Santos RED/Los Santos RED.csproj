@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>E:\GTA5\Plugins\</OutputPath>
+    <OutputPath>Releases\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -260,6 +260,7 @@
     <Compile Include="lsr\Locations\Interiors\Residence\Trophy\DisplayInteract.cs" />
     <Compile Include="lsr\Locations\Other\GangTerritory.cs" />
     <Compile Include="lsr\Locations\Places\ConditionalLocations\Civilian\CivilianConditionalLocation.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\Bank\ATMMachine.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\BodyExport.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\Business.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\Bus\Bus.cs" />
@@ -450,7 +451,6 @@
     <Compile Include="lsr\Locations\Places\ConditionalLocations\Service\LEConditionalLocation.cs" />
     <Compile Include="lsr\Locations\Places\ConditionalLocations\IGeneratesDispatchables.cs" />
     <Compile Include="lsr\Locations\Places\ConditionalLocations\Service\SecurityConditionalLocation.cs" />
-    <Compile Include="lsr\Locations\Places\GameLocations\Bank\ATMMachine.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\Bank\BankInteraction.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\City Hall\LicenseAnswer.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\City Hall\LicenseQuestion.cs" />

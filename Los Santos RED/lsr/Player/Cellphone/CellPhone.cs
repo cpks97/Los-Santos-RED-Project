@@ -45,6 +45,7 @@ public class CellPhone
     private GangInteraction GangInteraction;
     private IContactInteractable ContactInteractable;
     private CorruptCopInteraction CorruptCopInteraction;
+    private JobFixerInteraction JobFixerInteraction;
     private EmergencyServicesInteraction EmergencyServicesInteraction;
     private bool isRunningForcedMobileTask;
 
@@ -601,6 +602,14 @@ public class CellPhone
         }
         return ContactList.FirstOrDefault(x => Contacts.PossibleContacts.CorruptCopContact.Name == x.Name);
     }
+    public PhoneContact GetFixerContact()
+    {
+        if (Contacts.PossibleContacts.FixerContact == null)
+        {
+            return null;
+        }
+        return ContactList.FirstOrDefault(x => Contacts.PossibleContacts.FixerContact.Name == x.Name);
+    }
     public void ClearPendingTexts()
     {
         ScheduledTexts.Clear();
@@ -638,6 +647,14 @@ public class CellPhone
         get
         {
             return Contacts.PossibleContacts.CorruptCopContact;
+        }
+    }
+
+    public FixerContact DefaultFixerContact
+    {
+        get
+        {
+            return Contacts.PossibleContacts.FixerContact;
         }
     }
     private class ScheduledContact

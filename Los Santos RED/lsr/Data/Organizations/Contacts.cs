@@ -123,6 +123,7 @@ public class Contacts : IContacts
 
         PossibleContacts_FullExpanded.EmergencyServicesContact = null;
         PossibleContacts_FullExpanded.CorruptCopContact = null;
+        PossibleContacts_FullExpanded.FixerContact = null;
 
 
         TaxiServiceContact hellCabContact = new TaxiServiceContact(StaticStrings.HellCabContactName, "CHAR_BLANK_ENTRY") { FullNumber = "8884355222", Number = "4355222" };

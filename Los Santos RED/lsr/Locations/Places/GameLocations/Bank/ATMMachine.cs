@@ -33,6 +33,8 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
     {
 
     }
+    [XmlIgnore]
+    public DateTime? DisposeTime { get; private set; }
     public override bool ShowsOnDirectory { get; set; } = false;
     public override bool ShowsOnTaxi { get; set; } = false;
     public override string TypeName { get; set; } = "ATM";
@@ -41,8 +43,8 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
     public override string ButtonPromptText { get; set; }
     public override bool CanCurrentlyInteract(ILocationInteractable player)
     {
-        ButtonPromptText = $"Access {Name} ATM";
-        return !player.ActivityManager.IsPerformingActivity && EntrancePosition != Vector3.Zero || ( ATMObject.Exists() && player.CurrentLookedAtObject.Exists() && ATMObject.Handle == player.CurrentLookedAtObject.Handle);
+        ButtonPromptText = $"Interact with {Name} ATM";
+        return !player.ActivityManager.IsPerformingActivity && EntrancePosition != Vector3.Zero || (ATMObject.Exists() && player.CurrentLookedAtObject.Exists() && ATMObject.Handle == player.CurrentLookedAtObject.Handle);
     }
 
 
@@ -94,20 +96,11 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
 
 
                     MoveInteraction moveInteraction = new MoveInteraction(Player, FinalPlayerPos, FinalPlayerHeading);
-                    if (moveInteraction.MoveToMachine(1.0f) && StartUseMachine())
+                    if (moveInteraction.MoveToMachine(1.0f))
                     {
                         CreateInteractionMenu();
-                        InteractionMenu.Visible = true;
-                        BankInteraction = new BankInteraction(Player, AssociatedBank);
-                        BankInteraction.Start(MenuPool, InteractionMenu, true);
-                        while (IsAnyMenuVisible || KeepInteractionGoing)
-                        {
-                            MenuPool.ProcessMenus();
-                            GameFiber.Yield();
-                        }
-                        BankInteraction.Dispose();
-                        DisposeInteractionMenu();
-                    }                  
+                        AddATMMenuItems();
+                    }
                     FullDispose();
                     Player.ActivityManager.IsInteractingWithLocation = false;
                     Player.IsTransacting = false;
@@ -172,7 +165,7 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
             //}
             GameFiber.Yield();
         }
-        if(!IsCompleted)
+        if (!IsCompleted)
         {
             return false;
         }
@@ -194,7 +187,7 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
         {
             Player.WeaponEquipment.SetUnarmed();
             float AnimationTime = NativeFunction.CallByName<float>("GET_ENTITY_ANIM_CURRENT_TIME", Player.Character, PlayingDict, PlayingAnim);
-            if(!aw.IsAnimationRunning(AnimationTime))
+            if (!aw.IsAnimationRunning(AnimationTime))
             {
                 break;
             }
@@ -209,7 +202,7 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
         Bank closestBank = placesOfInterest.PossibleLocations.Banks.Where(x => x.IsEnabled).OrderBy(x => x.EntrancePosition.DistanceTo2D(EntrancePosition)).FirstOrDefault();
         AssociatedBank = closestBank;
 
-        if(AssociatedBank == null)
+        if (AssociatedBank == null)
         {
             EntryPoint.WriteToConsole($"ATM MACHINE HAS NO BANK ON SETUP");
         }
@@ -217,7 +210,7 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
         {
             EntryPoint.WriteToConsole($"ATM MACHINE HAS BANK ON SETUP {AssociatedBank.Name}");
         }
-        
+
 
         base.StoreData(shopMenus, agencies, gangs, zones, jurisdictions, gangTerritories, names, crimes, PedGroups, world, streets, locationTypes, settings, plateTypes, associations, contacts, interiors, player, modItems, weapons, time, placesOfInterest, issuableWeapons, heads, dispatchablePeople, modDataFileManager);
     }
@@ -225,6 +218,67 @@ public class ATMMachine : GameLocation// i know m stand for machine, makes it ne
     {
         possibleLocations.ATMMachines.Add(this);
         base.AddLocation(possibleLocations);
+    }
+    private void AddATMMenuItems()
+    {
+        UIMenuItem bankInteractionMenuItem = new UIMenuItem("Access Bank Account");
+        bankInteractionMenuItem.Activated += BankInteractionMenuItem_Activated;
+        UIMenuItem robATMMenuItem = new UIMenuItem("Break into ATM", "Break into ATM using a drill");
+        robATMMenuItem.Activated += RobATMMenuItem_Activated;
+        InteractionMenu.AddItem(bankInteractionMenuItem);
+        InteractionMenu.AddItem(robATMMenuItem);
+        InteractionMenu.Visible = true;
+        while (IsAnyMenuVisible || KeepInteractionGoing)
+        {
+            MenuPool.ProcessMenus();
+            GameFiber.Yield();
+        }
+        BankInteraction?.Dispose();
+        DisposeInteractionMenu();
+    }
+
+    private void RobATMMenuItem_Activated(UIMenu sender, UIMenuItem selectedItem)
+    {
+        DrillItem DrillItem;
+        if (Player.ActivityManager.HasDrillInHand && Player.ActivityManager.CurrentDrill != null)
+        {
+            DrillItem = Player.ActivityManager.CurrentDrill;
+        }
+        else
+        {
+            InventoryItem drillInventory = Player.Inventory.ItemsList.Where(x => x.ModItem != null && x.ModItem.ItemType == ItemType.Equipment && x.ModItem.ItemSubType == ItemSubType.Tool && x.ModItem.GetType() == typeof(DrillItem)).FirstOrDefault();
+            if (drillInventory == null)
+            {
+                Game.DisplaySubtitle("Need a Drill to interact");
+                return;
+            }
+            DrillItem = (DrillItem)drillInventory.ModItem;
+            if (DrillItem == null)
+            {
+                Game.DisplaySubtitle("Need a Drill to interact");
+                return;
+            }
+        }
+        DrillItem.PerformDrillingAnimation(Player, OnDrillComplete, true, Player.ActivityManager.ActiveDoorInterior);
+    }
+
+    private void BankInteractionMenuItem_Activated(UIMenu sender, UIMenuItem selectedItem)
+    {
+        InteractionMenu.Visible = false;
+        InteractionMenu.Clear();
+        if (StartUseMachine())
+        {
+            BankInteraction = new BankInteraction(Player, AssociatedBank);
+            BankInteraction.Start(MenuPool, InteractionMenu, true);
+        }
+    }
+    private void OnDrillComplete()
+    {
+        DisposeTime = Time.CurrentDateTime.AddDays(1);
+        IsTemporarilyClosed = true;
+        MenuPool.CloseAllMenus();
+        Player.BankAccounts.GiveMoney(5000,false);
+        Game.DisplaySubtitle("ATM Unlocked");
     }
 }
 

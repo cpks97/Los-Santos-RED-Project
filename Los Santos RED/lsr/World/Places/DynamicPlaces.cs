@@ -322,7 +322,6 @@ public class DynamicPlaces
         newATMMachine.Activate(Interiors, Settings, Crimes, Weapons, Time, World);
         ActiveATMMachines.Add(newATMMachine);
 
-
         EntryPoint.WriteToConsole($"Activate ATM {newATMMachine.Name} {newATMMachine.EntrancePosition}");
     }
     private void RemoveInactiveVendingMachines()
@@ -368,7 +367,12 @@ public class DynamicPlaces
         for (int i = ActiveATMMachines.Count - 1; i >= 0; i--)
         {
             ATMMachine gl = ActiveATMMachines[i];
-            if(gl.DistanceToPlayer < 100f && gl.ATMObject.Exists() && !NativeFunction.Natives.HAS_OBJECT_BEEN_BROKEN<bool>(gl.ATMObject, false))
+
+            if (gl.DistanceToPlayer < 100f && gl.ATMObject.Exists() && !NativeFunction.Natives.HAS_OBJECT_BEEN_BROKEN<bool>(gl.ATMObject, false))
+            {
+                continue;
+            }
+            if(gl.DisposeTime.HasValue && gl.DisposeTime > Time.CurrentDateTime)
             {
                 continue;
             }
