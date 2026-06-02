@@ -1,6 +1,7 @@
-﻿using LosSantosRED.lsr.Interface;
+using LosSantosRED.lsr.Interface;
 using Mod;
 using Rage;
+using RAGENativeUI;
 using RAGENativeUI.Elements;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,11 @@ using System.Xml.Serialization;
 public class GunStore : GameLocation
 {
     private UIMenuItem completeTask;
+    private IPlacesOfInterest PlacesOfInterest;
+    private IContacts Contacts;
+
+    private const int FixerContactCost = 10000;
+
     public GunStore() : base()
     {
 
@@ -40,22 +46,17 @@ public class GunStore : GameLocation
         ButtonPromptText = $"Shop At {Name}";
         return true;
     }
-    public override void StoreData(IShopMenus shopMenus, IAgencies agencies, IGangs gangs, IZones zones, IJurisdictions jurisdictions, IGangTerritories gangTerritories, INameProvideable names, ICrimes crimes, 
+    public override void StoreData(IShopMenus shopMenus, IAgencies agencies, IGangs gangs, IZones zones, IJurisdictions jurisdictions, IGangTerritories gangTerritories, INameProvideable names, ICrimes crimes,
         IPedGroups PedGroups, IEntityProvideable world, IStreets streets, ILocationTypes locationTypes, ISettingsProvideable settings, IPlateTypes plateTypes, IOrganizations associations, IContacts contacts, IInteriors interiors,
         ILocationInteractable player, IModItems modItems, IWeapons weapons, ITimeControllable time, IPlacesOfInterest placesOfInterest, IIssuableWeapons issuableWeapons, IHeads heads, IDispatchablePeople dispatchablePeople, ModDataFileManager modDataFileManager)
     {
         PhoneContact = contacts.GetContactData(ContactName);
+        PlacesOfInterest = placesOfInterest;
+        Contacts = contacts;
         base.StoreData(shopMenus, agencies, gangs, zones, jurisdictions, gangTerritories, names, crimes, PedGroups, world, streets, locationTypes, settings, plateTypes, associations, contacts, interiors, player, modItems, weapons, time, placesOfInterest, issuableWeapons, heads, dispatchablePeople, modDataFileManager);
     }
-    public override void OnInteract()//ILocationInteractable player, IModItems modItems, IEntityProvideable world, ISettingsProvideable settings, IWeapons weapons, ITimeControllable time, IPlacesOfInterest placesOfInterest)
+    public override void OnInteract()
     {
-        //Player = player;
-        //ModItems = modItems;
-        //World = world;
-        //Settings = settings;
-        //Weapons = weapons;
-        //Time = time;
-
         if (IsLocationClosed())
         {
             return;
@@ -95,6 +96,7 @@ public class GunStore : GameLocation
             {
                 SetupLocationCamera(locationCamera, isInside, false);
                 CreateInteractionMenu();
+                AddServicesMenu();
                 HandleVariableItems();
                 Transaction = new Transaction(MenuPool, InteractionMenu, Menu, this);
                 Transaction.UseAccounts = false;
@@ -116,6 +118,54 @@ public class GunStore : GameLocation
                 EntryPoint.ModController.CrashUnload();
             }
         }, "GangDenInteract");
+    }
+    private void AddServicesMenu()
+    {
+        if (Contacts == null || Contacts.PossibleContacts.FixerContact == null)
+        {
+            return;
+        }
+
+        UIMenu servicesSubMenu = MenuPool.AddSubMenu(InteractionMenu, "Services");
+        servicesSubMenu.RemoveBanner();
+
+        FixerContact fixerContact = Contacts.PossibleContacts.FixerContact;
+        bool alreadyHasContact = Player.CellPhone.ContactList.Any(x => x.Name == fixerContact.Name);
+
+        string description = alreadyHasContact
+            ? "You already have this contact in your phone."
+            : $"Pay a one-time fee to receive The Fixer's contact details on your phone.";
+
+        UIMenuItem hireFixerItem = new UIMenuItem("Pay for the Fixers contact", description)
+        {
+            RightLabel = alreadyHasContact ? "~g~Acquired~s~" : $"~r~{FixerContactCost:C0}~s~"
+        };
+
+        hireFixerItem.Enabled = !alreadyHasContact;
+
+        hireFixerItem.Activated += (sender, e) =>
+        {
+            if (Player.BankAccounts.GetMoney(false) < FixerContactCost)
+            {
+                PlayErrorSound();
+                DisplayMessage("~r~Insufficient Funds", $"You need {FixerContactCost:C0} cash to buy this contact.");
+                return;
+            }
+
+            Player.BankAccounts.GiveMoney(-FixerContactCost, false);
+            Player.CellPhone.AddContact(fixerContact, false);
+            PlaySuccessSound();
+            DisplayMessage("~g~Contact Acquired", "The Fixer's number has been added to your phone.");
+
+            // Disable the item and update labels now that it's been purchased
+            hireFixerItem.Enabled = false;
+            hireFixerItem.RightLabel = "~g~Acquired~s~";
+            hireFixerItem.Description = "You already have this contact in your phone.";
+
+            sender.Visible = false;
+        };
+
+        servicesSubMenu.AddItem(hireFixerItem);
     }
     public override void AddDistanceOffset(Vector3 offsetToAdd)
     {
@@ -141,4 +191,3 @@ public class GunStore : GameLocation
         base.AddLocation(possibleLocations);
     }
 }
-

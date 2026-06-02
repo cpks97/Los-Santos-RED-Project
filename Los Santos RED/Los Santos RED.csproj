@@ -269,6 +269,7 @@
     <Compile Include="lsr\Locations\Places\GameLocations\Dock\DockFerry.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\DrugMeetSpot.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\ePedFocusZone.cs" />
+    <Compile Include="lsr\Locations\Places\GameLocations\GunStore.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\MoveInteraction.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\OrbitCamera.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\PlayerPoser.cs" />
@@ -936,7 +937,6 @@
     <Compile Include="lsr\Locations\Places\GameLocations\GangDen.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\Machines\GasPump.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\GasStation.cs" />
-    <Compile Include="lsr\Locations\Places\GameLocations\GunStore.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\HardwareStore.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\HeadShop.cs" />
     <Compile Include="lsr\Locations\Places\GameLocations\Hotel.cs" />
