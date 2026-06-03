@@ -49,6 +49,16 @@ public class TaskSettings : ISettingsDefaultable
     [Description("Complications Percent for the Contract Killer task from The Fixer")]
     public float ContractKillerComplicationsPercentage { get; set; }
 
+    [Description("Minimum payment amount for the Escort Driver task from The Fixer")]
+    public int EscortDriverPaymentMin { get; set; }
+    [Description("Maximum payment amount for the Escort Driver task from The Fixer")]
+    public int EscortDriverPaymentMax { get; set; }
+
+    [Description("Minimum payment amount for the Security Truck task from The Fixer")]
+    public int SecurityTruckTheftPaymentMin { get; set; }
+    [Description("Maximum payment amount for the Security Truck task from The Fixer")]
+    public int SecurityTruckTheftPaymentMax { get; set; }
+
 
 
 
@@ -117,9 +127,15 @@ public class TaskSettings : ISettingsDefaultable
         OfficerFriendlyCopHitPaymentMax = 4500;// 20000;
         OfficerFriendlyCopHitComplicationsPercentage = 25f;
 
-        ContractKillerPaymentMin = 3000;// 10000;
-        ContractKillerPaymentMax = 5000;// 20000;
+        ContractKillerPaymentMin = 3300;
+        ContractKillerPaymentMax = 5500;
         ContractKillerComplicationsPercentage = 40f;
+
+        EscortDriverPaymentMin = 1500;
+        EscortDriverPaymentMax = 2000;
+
+        SecurityTruckTheftPaymentMin = 6000;
+        SecurityTruckTheftPaymentMax = 10000;
 
         UndergroundGunsGunPickupPaymentMin = 2000;// 5000;
         UndergroundGunsGunPickupPaymentMax = 4000;// 10000;

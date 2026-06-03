@@ -295,6 +295,8 @@
     <Compile Include="lsr\Locations\Places\Interface\IPayoutDisbursable.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Contract Killer\ContractKillerTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Contract Killer\FixerTasks.cs" />
+    <Compile Include="lsr\Player\ActiveTasks\Contract Killer\HookerDeliveryTask.cs" />
+    <Compile Include="lsr\Player\ActiveTasks\Contract Killer\SecurityTruckTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangArsonTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\GangRacketeeringTask.cs" />
     <Compile Include="lsr\Player\ActiveTasks\Gang\Generic\WeaponMeetTask.cs" />
@@ -1339,6 +1341,7 @@
     <Compile Include="lsr\Weather\eWeatherTypeHash.cs" />
     <Compile Include="lsr\Weather\IWeatherReportable.cs" />
     <Compile Include="lsr\Weather\WeatherForecast.cs" />
+    <Compile Include="lsr\World\CayoProximityWatcher.cs" />
     <Compile Include="lsr\World\eRandomEventType.cs" />
     <Compile Include="lsr\World\Interface\IEntityProvideable.cs" />
     <Compile Include="lsr\Time\ITimeControllable.cs" />
