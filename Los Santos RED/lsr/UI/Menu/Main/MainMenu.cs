@@ -59,7 +59,7 @@ public class MainMenu : ModUIMenu
         UI = ui;
         Crimes = crimes;
         ActivityPerformable = activityPerformable;
-        Main = new UIMenu("LSRP", "Select an Option");
+        Main = new UIMenu("LSR", "Select an Option");
         SettingsMenu = new SettingsMenu(MenuPool, Main, Settings, Crimes, intoxicants, shopMenus);
         PedSwapMenu = new PedSwapMenu(MenuPool, Main, PedSwap, Gangs, agencies, ActionablePlayer);
     }

@@ -15,7 +15,7 @@ using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-[assembly: Rage.Attributes.Plugin("Los Santos RED Project", Description = "LSR Sub Mod", Author = "CPKS & LSRP Team", PrefersSingleInstance = true, ShouldTickInPauseMenu = true)]
+[assembly: Rage.Attributes.Plugin("Los Santos RED", Description = "LSR Sub Mod", Author = "Greskrendtregk", PrefersSingleInstance = true, ShouldTickInPauseMenu = true)]
 public static class EntryPoint
 {
     private static bool HasDependencies = true;
@@ -101,7 +101,7 @@ public static class EntryPoint
     {
         LSRAssembly = System.Reflection.Assembly.GetExecutingAssembly();
         LSRInstalledVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(LSRAssembly.Location);
-        PreStartMessage = $"~s~Los Santos ~r~RED ~s~Project ~s~v{LSRInstalledVersionInfo.FileVersion} ~n~By ~p~CPKS ~s~& ~g~LSRP Team ~n~~s~Press Shift+F10 to Start";
+        PreStartMessage = $"~s~Los Santos ~r~RED ~s~v{LSRInstalledVersionInfo.FileVersion} ~n~By ~p~Greskrendtregk s~Press Shift+F10 to Start";
         WriteToConsole($"Has Started Successfully",0);
     }
     private static void CheckDependencies()
@@ -175,7 +175,7 @@ public static class EntryPoint
     {
         if (level <= LogLevel)
         {
-            Game.Console.Print($"Los Santos RED Project v{LSRInstalledVersionInfo.FileVersion} - {Message}");
+            Game.Console.Print($"Los Santos RED v{LSRInstalledVersionInfo.FileVersion} - {Message}");
         }
     }
     [ConsoleCommand]

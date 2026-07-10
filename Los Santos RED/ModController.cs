@@ -180,7 +180,7 @@ namespace LosSantosRED.lsr
 
 
 
-            Game.DisplayNotification("~s~Los Santos ~r~RED ~s~Project ~s~Deactivated");
+            Game.DisplayNotification("~s~Los Santos ~r~RED ~s~Deactivated");
             EntryPoint.WriteToConsole($"Has Been Deactivated", 0);
         }
         public void CrashUnload()
@@ -459,8 +459,8 @@ namespace LosSantosRED.lsr
                 Game.RemoveNotification(EntryPoint.NotificationID);
             }
             Game.DisplayNotification(
-                $"~s~Los Santos ~r~RED ~s~Project ~s~v{fvi.FileVersion} " +
-                $"~n~By ~p~CPKS ~s~& ~g~LSRP Team ~s~Has Loaded Successfully.");
+                $"~s~Los Santos ~r~RED ~s~v{fvi.FileVersion} " +
+                $"~n~By ~p~Greskrendtregk ~s~Has Loaded Successfully.");
 
             string controlString =
                 $"Main Menu (Keyboard): ~{ModDataFileManager.Settings.SettingsManager.KeySettings.MenuKey.GetInstructionalId()}~" +
